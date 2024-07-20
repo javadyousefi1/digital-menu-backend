@@ -17,9 +17,7 @@ class CategoryController extends Controller {
     async addNewCategory(req, res, next) {
         try {
             // get data from body
-            const { title, } = req.body;
-            // check file is exsited or not
-            if (!req?.file) throw new createError.BadRequest("File not found")
+            const { title, image } = req.body;
             // fileUrl
             const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req?.file?.filename}`;
             const newCategory = { title, image: fileUrl };
@@ -75,9 +73,17 @@ class CategoryController extends Controller {
 
     async deleteCategory(req, res, next) {
         const { id } = req.query;
-        if (!id) throw new createError.BadRequest("you dont sent id !")
+        if (!id) next(createError.BadRequest("you dont sent id !"))
+        const willBeDeletedBlog = await this.isCategoryidAlreadyExistsById(id, next)
         try {
             const Categorys = await this.#model.deleteOne({ _id: id });
+            // delete image
+            const blogImageName = willBeDeletedBlog?.image.split("/").at(-1)
+            let imagePath = path.join(__dirname, `../../../uploads/${blogImageName}`)
+            if (fs.existsSync(imagePath)) {
+                await fs.unlinkSync(imagePath);
+            }
+
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "Category deleted successfully",
@@ -91,8 +97,12 @@ class CategoryController extends Controller {
     async isCategoryidAlreadyExistsById(id, next = () => { }) {
         try {
             if (!isValidObjectId(id)) throw new createError.BadRequest("your category id is not valid")
-            const foundBlog = await this.#model.countDocuments({ _id: id })
-            if (!foundBlog) throw new createError.NotFound("not found a category with this id !")
+            const foundBlog = await this.#model.findOne({ _id: id })
+            if (!foundBlog) {
+                throw new createError.NotFound("not found a category with this id !")
+            } else {
+                return foundBlog
+            }
         } catch (error) {
             next(error)
         }
