@@ -17,10 +17,12 @@ class CategoryController extends Controller {
     async addNewCategory(req, res, next) {
         try {
             // get data from body
-            const { title, image } = req.body;
+            const { title, isActive } = req.body;
+            // check file is already exsited or not
+            if (!req?.file) throw new createError.BadRequest("file not sent")
             // fileUrl
             const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req?.file?.filename}`;
-            const newCategory = { title, image: fileUrl };
+            const newCategory = { title, image: fileUrl, isActive };
 
             // check dublicate
             const isAlreadyExist = await this.#model.countDocuments({ title: title.trim() })
@@ -40,23 +42,38 @@ class CategoryController extends Controller {
             next(error)
         }
     }
-
+    
     async updateCategory(req, res, next) {
+        const { title, id, isActive } = req.body;
+        const updatedCategory = { title, _id: id, isActive };
+        const prevData = await this.#model.findOne({ _id: id });
         try {
-            // get data from body
-            const { title, id } = req.body;
-            const updatedCategory = { title, _id: id };
-            // update category from DB
-            const newCategoryCreated = await this.#model.updateOne(updatedCategory);
+
+            let imagePath;
+
+            if (req.file) {
+                const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req?.file?.filename}`;
+                updatedCategory.image = fileUrl;
+
+                imagePath = path.join(__dirname, `../../../uploads/${prevData?.image.split("/").pop()}`);
+                if (fs.existsSync(imagePath)) {
+                    await fs.unlinkSync(imagePath);
+                }
+            } else {
+                updatedCategory.image = prevData?.image;
+            }
+            const result = await this.#model.updateOne({ _id: id }, { $set: updatedCategory });
+           
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "Category updated successfully",
-                data: newCategoryCreated
-            })
+                data: result
+            });
         } catch (error) {
-            next(error)
+            next(error); // Ensure this is the last line in the catch block
         }
     }
+
 
     async getAllCategorys(req, res, next) {
         try {
@@ -88,6 +105,33 @@ class CategoryController extends Controller {
                 statusCode: res.statusCode,
                 message: "Category deleted successfully",
                 data: Categorys._id
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
+    async toggleCategoryStatus(req, res, next) {
+        try {
+            const { categoryId } = req.body
+            if (!isValidObjectId(categoryId)) throw new createError.BadRequest("your category id is not valid")
+
+            await this.#model.findOneAndUpdate(
+                { _id: categoryId }, // Filter to find the user by ID
+                [
+                    {
+                        $set: {
+                            isActive: { $not: "$isActive" } // Toggle the isActive field
+                        }
+                    }
+                ],
+                { new: true } // Return the updated document
+            );
+
+            res.status(200).json({
+                statusCode: res.statusCode,
+                message: "Category status changed successfully",
             })
         } catch (error) {
             next(error)

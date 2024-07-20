@@ -35,7 +35,8 @@ const upload = multer({
 
 
 router.post("/create-category", upload.single('file'), CategoryController.addNewCategory)
-router.put("/update-category", CategoryController.updateCategory)
+router.put("/update-category", upload.single('file'), CategoryController.updateCategory)
+router.patch("/toggle-category-status", CategoryController.toggleCategoryStatus)
 router.get("/get-all-categories", CategoryController.getAllCategorys)
 router.delete("/delete-Category", CategoryController.deleteCategory)
 

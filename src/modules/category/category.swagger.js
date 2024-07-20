@@ -26,6 +26,20 @@
  * @swagger
  *  components:
  *      schemas:
+ *          ToggleStatus:
+ *              type: object
+ *              required:
+ *                  -   categoryId
+ *                  -   icon
+ *              properties:
+ *                  categoryId:
+ *                      type: string
+ */
+
+/**
+ * @swagger
+ *  components:
+ *      schemas:
  *          UpdateCategory:
  *              type: object
  *              required:
@@ -58,6 +72,9 @@
  *                          title:
  *                              type: string
  *                              description: The title of the category post
+ *                          isActive:
+ *                              type: boolean
+ *                              description: The status of the category post
  *                          file:
  *                              type: string
  *                              format: binary
@@ -66,6 +83,38 @@
  *          201:
  *              description: category created successfully
  */
+
+/**
+ * @swagger
+ * /api/category/update-category:
+ *  put:
+ *      summary: update category 
+ *      tags:
+ *          - Category
+ *      requestBody:
+ *          content:
+ *              multipart/form-data:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          id:
+ *                              type: string
+ *                              description: The id of will be updated category
+ *                          title:
+ *                              type: string
+ *                              description: The title of the category post
+ *                          isActive:
+ *                              type: boolean
+ *                              description: The status of the category post
+ *                          file:
+ *                              type: string
+ *                              format: binary
+ *                              description: The file image for the category post (must be a valid image file)
+ *      responses:
+ *          201:
+ *              description: category created successfully
+ */
+
 /**
  * @swagger
  * /api/category/get-all-categories:
@@ -77,6 +126,7 @@
  *          200: 
  *              description: successfully
  */
+
 /**
  * @swagger
  * /api/category/delete-category:
@@ -91,4 +141,21 @@
  *      responses:
  *          200: 
  *              description: successfully
+ */
+
+/**
+ * @swagger
+ * /api/categoey/toggle-category-status:
+ *  patch:
+ *      summary: toggle blog status
+ *      tags:
+ *          -   Category
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/ToggleStatus'
+ *      responses:
+ *          201: 
+ *              description: created
  */
