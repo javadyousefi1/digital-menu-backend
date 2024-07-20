@@ -145,7 +145,7 @@
 
 /**
  * @swagger
- * /api/categoey/toggle-category-status:
+ * /api/category/toggle-category-status:
  *  patch:
  *      summary: toggle blog status
  *      tags:

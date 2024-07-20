@@ -13,8 +13,10 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: function (req, file, cb) {
-        const name = `${req?.body?.title}.${file.originalname.split(".").at(-1)}`
+        const now = new Date().getTime();
+        const name = `${now}.${file.originalname.split(".").at(-1)}`
         req.fileName = name
+        req.imageId = now
         cb(null, name);
     }
 });

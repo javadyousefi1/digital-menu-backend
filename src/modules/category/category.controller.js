@@ -20,9 +20,10 @@ class CategoryController extends Controller {
             const { title, isActive } = req.body;
             // check file is already exsited or not
             if (!req?.file) throw new createError.BadRequest("file not sent")
+            const now = new Date().getTime()
             // fileUrl
             const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req?.file?.filename}`;
-            const newCategory = { title, image: fileUrl, isActive };
+            const newCategory = { title, image: { path: fileUrl, id: req.imageId }, isActive };
 
             // check dublicate
             const isAlreadyExist = await this.#model.countDocuments({ title: title.trim() })
@@ -42,20 +43,20 @@ class CategoryController extends Controller {
             next(error)
         }
     }
-    
+
     async updateCategory(req, res, next) {
         const { title, id, isActive } = req.body;
         const updatedCategory = { title, _id: id, isActive };
-        const prevData = await this.#model.findOne({ _id: id });
+        const prevData = await this.isCategoryidAlreadyExistsById(id, next)
         try {
 
             let imagePath;
 
             if (req.file) {
-                const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req?.file?.filename}`;
-                updatedCategory.image = fileUrl;
+                const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req?.fileName}`;
+                updatedCategory.image = { path: fileUrl, id: req.imageId };
 
-                imagePath = path.join(__dirname, `../../../uploads/${prevData?.image.split("/").pop()}`);
+                imagePath = path.join(__dirname, `../../../uploads/${prevData?.image.path.split("/").pop()}`);
                 if (fs.existsSync(imagePath)) {
                     await fs.unlinkSync(imagePath);
                 }
@@ -63,11 +64,22 @@ class CategoryController extends Controller {
                 updatedCategory.image = prevData?.image;
             }
             const result = await this.#model.updateOne({ _id: id }, { $set: updatedCategory });
-           
+
+            console.log(result)
+
+            // if (result?.modifiedCount !== 1) {
+
+            //     return res.status(400).json({
+            //         statusCode: res.statusCode,
+            //         message: "Category updated failed",
+            //         // data: result
+            //     });
+            // }
+
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "Category updated successfully",
-                data: result
+                // data: result
             });
         } catch (error) {
             next(error); // Ensure this is the last line in the catch block
@@ -95,7 +107,8 @@ class CategoryController extends Controller {
         try {
             const Categorys = await this.#model.deleteOne({ _id: id });
             // delete image
-            const blogImageName = willBeDeletedBlog?.image.split("/").at(-1)
+            const blogImageName = willBeDeletedBlog?.image?.path.split("/").at(-1)
+            console.log(blogImageName)
             let imagePath = path.join(__dirname, `../../../uploads/${blogImageName}`)
             if (fs.existsSync(imagePath)) {
                 await fs.unlinkSync(imagePath);
