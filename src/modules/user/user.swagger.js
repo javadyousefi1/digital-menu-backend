@@ -27,13 +27,16 @@
  *          LoginUser:
  *              type: object
  *              required:
- *                  -   email
+ *                  -   userName
  *                  -   password
+ *                  -   token
  *                  -   icon
  *              properties:
- *                  email:
+ *                  userName:
  *                      type: string
  *                  password:
+ *                      type: string
+ *                  token:
  *                      type: string
  *          AddAdminRole:
  *              type: object
