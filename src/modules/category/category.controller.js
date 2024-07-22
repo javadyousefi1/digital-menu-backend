@@ -1,7 +1,9 @@
-const { isValidObjectId } = require('mongoose');
+const { isValidObjectId, default: mongoose } = require('mongoose');
 const Controller = require('../../common/controllers/controller')
 // model
 const { categoryModel } = require('./category.model')
+const { menuModel } = require('../menu/menu.model.js')
+const { MenuController } = require('../menu/menu.controller.js')
 // error handling
 const createError = require("http-errors");
 // path
@@ -9,9 +11,11 @@ const path = require('path');
 const fs = require('fs');
 class CategoryController extends Controller {
     #model
+    #menuModel
     constructor() {
         super()
         this.#model = categoryModel
+        this.#menuModel = menuModel
     }
 
     async addNewCategory(req, res, next) {
@@ -20,7 +24,6 @@ class CategoryController extends Controller {
             const { title, isActive } = req.body;
             // check file is already exsited or not
             if (!req?.file) throw new createError.BadRequest("file not sent")
-            const now = new Date().getTime()
             // fileUrl
             const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req?.file?.filename}`;
             const newCategory = { title, image: { path: fileUrl, id: req.imageId }, isActive };
@@ -65,24 +68,12 @@ class CategoryController extends Controller {
             }
             const result = await this.#model.updateOne({ _id: id }, { $set: updatedCategory });
 
-            console.log(result)
-
-            // if (result?.modifiedCount !== 1) {
-
-            //     return res.status(400).json({
-            //         statusCode: res.statusCode,
-            //         message: "Category updated failed",
-            //         // data: result
-            //     });
-            // }
-
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "Category updated successfully",
-                // data: result
             });
         } catch (error) {
-            next(error); // Ensure this is the last line in the catch block
+            next(error);
         }
     }
 
@@ -101,10 +92,14 @@ class CategoryController extends Controller {
     }
 
     async deleteCategory(req, res, next) {
-        const { id } = req.query;
-        if (!id) next(createError.BadRequest("you dont sent id !"))
-        const willBeDeletedBlog = await this.isCategoryidAlreadyExistsById(id, next)
+
         try {
+            const { id } = req.query;
+            if (!id) next(createError.BadRequest("you dont sent id !"))
+            const isExsitedMenu = await this.#menuModel.countDocuments({ categoryId: id });
+
+            const willBeDeletedBlog = await this.isCategoryidAlreadyExistsById(id, next)
+            if (isExsitedMenu > 0) throw new createError.BadRequest("a menu exsited with this category")
             const Categorys = await this.#model.deleteOne({ _id: id });
             // delete image
             const blogImageName = willBeDeletedBlog?.image?.path.split("/").at(-1)

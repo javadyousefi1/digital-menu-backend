@@ -1,4 +1,4 @@
-const { blogRoutes } = require("../modules/blog/blog.routes");
+const { menuRoutes } = require("../modules/menu/menu.routes");
 const { categoryRoutes } = require("../modules/category/category.routes");
 const { tagRoutes } = require("../modules/tag/tag.routes");
 const { userRoutes } = require("../modules/user/user.routes");
@@ -10,8 +10,8 @@ router.get("/", (req, res) => {
 });
 
 router.use("/user", userRoutes)
-router.use("/blog", blogRoutes)
 router.use("/category", categoryRoutes)
+router.use("/menu", menuRoutes)
 router.use("/tag", tagRoutes)
 
 module.exports = {

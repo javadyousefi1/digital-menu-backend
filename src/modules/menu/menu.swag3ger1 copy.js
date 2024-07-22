@@ -1,27 +1,27 @@
 /**
  * @swagger
  * tags:
- *  name: Blog
- *  description: Blog Module and Routes
+ *  name: Menu
+ *  description: Menu Module and Routes
  */
 /**
  * @swagger
  * tags:
- *  name: BlogComments
- *  description: BlogComments Module and Routes
+ *  name: MenuComments
+ *  description: MenuComments Module and Routes
  */
 /**
  * @swagger
  * tags:
- *  name: BlogLikes
- *  description: BlogLikes Module and Routes
+ *  name: MenuLikes
+ *  description: MenuLikes Module and Routes
  */
 
 /**
  * @swagger
  *  components:
  *      schemas:
- *          CreateBlog:
+ *          CreateMenu:
  *              type: object
  *              required:
  *                  -   title
@@ -46,31 +46,31 @@
  *          AddComment:
  *              type: object
  *              required:
- *                  -   blogId
+ *                  -   menuId
  *                  -   comment
  *                  -   icon
  *              properties:
- *                  blogId:
+ *                  menuId:
  *                      type: string
  *                  comment:
  *                      type: string
- *          LikeBlog:
+ *          LikeMenu:
  *              type: object
  *              required:
- *                  -   blogId
+ *                  -   menuId
  *                  -   icon
  *              properties:
- *                  blogId:
+ *                  menuId:
  *                      type: string
  *          ReplyComment:
  *              type: object
  *              required:
- *                  -   blogId
+ *                  -   menuId
  *                  -   commentId
  *                  -   reply
  *                  -   icon
  *              properties:
- *                  blogId:
+ *                  menuId:
  *                      type: string
  *                  commentId:
  *                      type: string
@@ -79,22 +79,22 @@
  *          VerifyComment:
  *              type: object
  *              required:
- *                  -   blogId
+ *                  -   menuId
  *                  -   commentId
  *                  -   icon
  *              properties:
- *                  blogId:
+ *                  menuId:
  *                      type: string
  *                  commentId:
  *                      type: string
  *          DeleteComment:
  *              type: object
  *              required:
- *                  -   blogId
+ *                  -   menuId
  *                  -   commentId
  *                  -   icon
  *              properties:
- *                  blogId:
+ *                  menuId:
  *                      type: string
  *                  commentId:
  *                      type: string
@@ -102,11 +102,11 @@
 
 /**
  * @swagger
- * /api/blog/create-blog:
+ * /api/menu/create-menu:
  *  post:
- *      summary: Create a new blog post
+ *      summary: Create a new menu post
  *      tags:
- *          - Blog
+ *          - Menu
  *      requestBody:
  *          content:
  *              multipart/form-data:
@@ -115,53 +115,53 @@
  *                      properties:
  *                          title:
  *                              type: string
- *                              description: The title of the blog post
+ *                              description: The title of the menu post
  *                          readingDuration:
  *                              type: number
  *                              description: The estimated reading duration in minutes
  *                          categoryId:
  *                              type: string
- *                              description: The category ID associated with the blog post
+ *                              description: The category ID associated with the menu post
  *                          text:
  *                              type: string
- *                              description: The main text content of the blog post
+ *                              description: The main text content of the menu post
  *                          tags:
  *                              type: array
  *                              items:
  *                                  type: string
- *                              description: Tags associated with the blog post
+ *                              description: Tags associated with the menu post
  *                          file:
  *                              type: string
  *                              format: binary
- *                              description: The file image for the blog post (must be a valid image file)
+ *                              description: The file image for the menu post (must be a valid image file)
  *      responses:
  *          201:
- *              description: Blog created successfully
+ *              description: Menu created successfully
  */
 
 /**
  * @swagger
- * /api/blog/like-blog:
+ * /api/menu/like-menu:
  *  post:
- *      summary: like or unlike blog
+ *      summary: like or unlike menu
  *      tags:
- *          -   BlogLikes
+ *          -   MenuLikes
  *      requestBody:
  *          content:
  *              application/json:
  *                  schema:
- *                      $ref: '#/components/schemas/LikeBlog'
+ *                      $ref: '#/components/schemas/LikeMenu'
  *      responses:
  *          201: 
  *              description: likeed or unliked
  */
 /**
  * @swagger
- * /api/blog/add-comment:
+ * /api/menu/add-comment:
  *  post:
- *      summary: add comment on blog
+ *      summary: add comment on menu
  *      tags:
- *          -   BlogComments
+ *          -   MenuComments
  *      requestBody:
  *          content:
  *              application/json:
@@ -173,11 +173,11 @@
  */
 /**
  * @swagger
- * /api/blog/reply-comment:
+ * /api/menu/reply-comment:
  *  post:
- *      summary: reply comment on blog
+ *      summary: reply comment on menu
  *      tags:
- *          -   BlogComments
+ *          -   MenuComments
  *      requestBody:
  *          content:
  *              application/json:
@@ -189,11 +189,11 @@
  */
 /**
  * @swagger
- * /api/blog/verify-comment:
+ * /api/menu/verify-comment:
  *  post:
- *      summary: verify comment on blog
+ *      summary: verify comment on menu
  *      tags:
- *          -   BlogComments
+ *          -   MenuComments
  *      requestBody:
  *          content:
  *              application/json:
@@ -205,15 +205,15 @@
  */
 /**
  * @swagger
- * /api/blog/delete-comment:
+ * /api/menu/delete-comment:
  *  delete:
- *      summary: delete comment on blog
+ *      summary: delete comment on menu
  *      tags:
- *          -   BlogComments
+ *          -   MenuComments
  *      parameters:
  *          -   in: query
  *              required: true
- *              name: blogId
+ *              name: menuId
  *          -   in: query
  *              required: true
  *              name: commentId
@@ -223,22 +223,22 @@
  */
 /**
  * @swagger
- * /api/blog/get-all-blogs:
+ * /api/menu/get-all-menus:
  *  get:
- *      summary: get all blogs
+ *      summary: get all menus
  *      tags:
- *          -   Blog
+ *          -   Menu
  *      responses:
  *          200: 
  *              description: successfully
  */
 /**
  * @swagger
- * /api/blog/delete-blog:
+ * /api/menu/delete-menu:
  *  delete:
- *      summary: delete blog
+ *      summary: delete menu
  *      tags:
- *          -   Blog
+ *          -   Menu
  *      parameters:
  *          -   in: query
  *              required: true
