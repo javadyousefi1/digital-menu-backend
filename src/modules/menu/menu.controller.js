@@ -125,6 +125,32 @@ class MenuController extends Controller {
         }
     }
 
+    async toggleMenuStatus(req, res, next) {
+        try {
+            const { menuId } = req.body
+            if (!isValidObjectId(menuId)) throw new createError.BadRequest("your menu id is not valid")
+
+            await this.#model.findOneAndUpdate(
+                { _id: menuId }, // Filter to find the user by ID
+                [
+                    {
+                        $set: {
+                            isActive: { $not: "$isActive" } // Toggle the isActive field
+                        }
+                    }
+                ],
+                { new: true } // Return the updated document
+            );
+
+            res.status(200).json({
+                statusCode: res.statusCode,
+                message: "menu status changed successfully",
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
 
     async isExsitedMenuByCategoryId(id, next = () => { }) {
         try {

@@ -1,6 +1,6 @@
 const { menuRoutes } = require("../modules/menu/menu.routes");
 const { categoryRoutes } = require("../modules/category/category.routes");
-const { tagRoutes } = require("../modules/tag/tag.routes");
+const { suggestionRoutes } = require("../modules/suggestions/suggestions.routes");
 const { userRoutes } = require("../modules/user/user.routes");
 
 const router = require("express").Router();
@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
 router.use("/user", userRoutes)
 router.use("/category", categoryRoutes)
 router.use("/menu", menuRoutes)
-router.use("/tag", tagRoutes)
+router.use("/suggestion", suggestionRoutes)
 
 module.exports = {
     allRoutes: router,

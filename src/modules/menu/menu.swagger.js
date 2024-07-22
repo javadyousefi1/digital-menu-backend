@@ -7,6 +7,21 @@
 
 /**
  * @swagger
+ *  components:
+ *      schemas:
+ *          ToggleStatusMenu:
+ *              type: object
+ *              required:
+ *                  -   menuId
+ *                  -   icon
+ *              properties:
+ *                  menuId:
+ *                      type: string
+ */
+
+
+/**
+ * @swagger
  * /api/menu/create-menu:
  *  post:
  *      summary: Create a new menu post
@@ -115,4 +130,22 @@
  *      responses:
  *          200: 
  *              description: successfully
+ */
+
+
+/**
+ * @swagger
+ * /api/menu/toggle-menu-status:
+ *  patch:
+ *      summary: toggle menu status
+ *      tags:
+ *          -   Menu
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/ToggleStatusMenu'
+ *      responses:
+ *          201: 
+ *              description: created
  */
