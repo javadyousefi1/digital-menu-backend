@@ -50,17 +50,17 @@ class UserController extends Controller {
             const { email, password } = req.body;
             const loginUser = { email, password };
             // check dublicate
-            const userData = await this.#model.findOne({ email: email.trim(), password: password.trim() })
-            if (!userData) throw new createError.BadRequest("email or password is not correct")
+            // const userData = await this.#model.findOne({ email: email.trim(), password: password.trim() })
+            // if (!userData) throw new createError.BadRequest("email or password is not correct")
             // set token on cookie
             const token = await JwtController.generateNewToken(email, next);
             // set token on cookie
-            res.cookie('blog_jwt', token, { maxAge: 60 * 60 * 1000, httpOnly: true, secure: process.env.NODE_ENV === NodeEnv.Production });
+            res.cookie('menu_jwt', token, { maxAge: 60 * 60 * 1000, httpOnly: true, secure: process.env.NODE_ENV === NodeEnv.Production });
             // response
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "you logged in succsefully",
-                data: userData
+                // data: userData
             })
         } catch (error) {
             next(error)

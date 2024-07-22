@@ -1,8 +1,11 @@
+// error handling
+const createError = require("http-errors");
 const axios = require("axios");
 
 const captchaHandler = async (req, res, next) => {
 
     try {
+        if (!req.body.token) throw new createError.BadRequest("token not sent!")
         const response = await axios.post(
             `https://www.google.com/recaptcha/api/siteverify`,
             null,
@@ -13,9 +16,11 @@ const captchaHandler = async (req, res, next) => {
                 },
             }
         );
-
-        if (response.success === true) {
+        console.log(response?.data)
+        if (response?.data.success === true) {
             next()
+        } else {
+            throw new Error("captcha validtion failed")
         }
     } catch (e) {
         next(e)
