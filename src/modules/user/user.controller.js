@@ -46,14 +46,18 @@ class UserController extends Controller {
 
     async loginUser(req, res, next) {
         try {
+            if (!req.captchaIsValid) throw new createError.BadRequest("captcha failed")
             // get data from body
-            const { email, password } = req.body;
-            const loginUser = { email, password };
+            const { userName, password } = req.body;
+
+            if (!(userName === "admin" && password === "admin")) {
+                throw new createError.Unauthorized("username or password is invalid")
+            }
             // check dublicate
             // const userData = await this.#model.findOne({ email: email.trim(), password: password.trim() })
             // if (!userData) throw new createError.BadRequest("email or password is not correct")
             // set token on cookie
-            const token = await JwtController.generateNewToken(email, next);
+            const token = await JwtController.generateNewToken(userName, next);
             // set token on cookie
             res.cookie('menu_jwt', token, { maxAge: 60 * 60 * 1000, httpOnly: true, secure: process.env.NODE_ENV === NodeEnv.Production });
             // response
