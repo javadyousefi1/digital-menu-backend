@@ -13,7 +13,8 @@ router.use("/user", userRoutes)
 router.use("/category", categoryRoutes)
 router.use("/menu", menuRoutes)
 router.use("/suggestion", suggestionRoutes)
-router.post("/captcha", async (req, res) => {
+
+router.post("/validate-captcha", async (req, res) => {
 
     const response = await axios.post(
         `https://www.google.com/recaptcha/api/siteverify`,
