@@ -47,6 +47,13 @@
  *      summary: get all suggestionss
  *      tags:
  *          -   Suggestions
+ *      parameters:
+ *          -   in: query
+ *              required: false
+ *              name: pageSize
+ *          -   in: query
+ *              required: false
+ *              name: pageIndex
  *      responses:
  *          200: 
  *              description: successfully

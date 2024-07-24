@@ -122,6 +122,13 @@
  *      summary: get all categories
  *      tags:
  *          -   Category
+ *      parameters:
+ *          -   in: query
+ *              required: false
+ *              name: pageSize
+ *          -   in: query
+ *              required: false
+ *              name: pageIndex
  *      responses:
  *          200: 
  *              description: successfully

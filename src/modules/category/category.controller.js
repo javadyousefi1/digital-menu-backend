@@ -9,6 +9,7 @@ const createError = require("http-errors");
 // path
 const path = require('path');
 const fs = require('fs');
+const { paginate } = require('../../utils/helpers.js');
 class CategoryController extends Controller {
     #model
     #menuModel
@@ -80,11 +81,15 @@ class CategoryController extends Controller {
 
     async getAllCategorys(req, res, next) {
         try {
-            const Categorys = await this.#model.find({});
+            const { pageSize, pageIndex } = req.query
+
+            const paginateData = await paginate(this.#model, {}, pageSize, pageIndex)
+
+            await this.#model.find({});
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "all Category resived successfully",
-                data: Categorys
+                ...paginateData
             })
         } catch (error) {
             next(error)

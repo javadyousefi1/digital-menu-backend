@@ -4,6 +4,7 @@ const Controller = require('../../common/controllers/controller')
 const { suggestionsModel } = require('./suggestions.model')
 // error handling
 const createError = require("http-errors");
+const { paginate } = require('../../utils/helpers');
 
 class SuggestionsController extends Controller {
     #model
@@ -35,11 +36,15 @@ class SuggestionsController extends Controller {
 
     async getAllSuggestionss(req, res, next) {
         try {
+            const { pageSize, pageIndex } = req.query
+
+            const paginateData = await paginate(this.#model, {}, pageSize, pageIndex)
+
             const Suggestionss = await this.#model.find({});
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "all Suggestions resived successfully",
-                data: Suggestionss
+                ...paginateData
             })
         } catch (error) {
             next(error)
@@ -50,7 +55,7 @@ class SuggestionsController extends Controller {
         try {
             const { id } = req.query;
             if (!id) throw new createError.BadRequest("you dont sent id !")
-            await this.isSuggestionsidAlreadyExistsById(id,next)
+            await this.isSuggestionsidAlreadyExistsById(id, next)
             const Suggestionss = await this.#model.deleteOne({ _id: id });
             res.status(200).json({
                 statusCode: res.statusCode,
