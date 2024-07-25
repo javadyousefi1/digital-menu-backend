@@ -96,6 +96,27 @@ class CategoryController extends Controller {
         }
     }
 
+
+    async getCategoryById(req, res, next) {
+
+        try {
+            const { id } = req.query;
+            if (!id) next(createError.BadRequest("you dont sent id !"))
+
+            const reuslt = await this.isCategoryidAlreadyExistsById(id, next)
+
+
+            res.status(200).json({
+                statusCode: res.statusCode,
+                message: "Category gets successfully",
+                data: reuslt
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
     async deleteCategory(req, res, next) {
 
         try {

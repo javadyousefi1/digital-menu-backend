@@ -136,6 +136,22 @@
 
 /**
  * @swagger
+ * /api/category/get-category-byId:
+ *  get:
+ *      summary: get category by id
+ *      tags:
+ *          -   Category
+ *      parameters:
+ *          -   in: query
+ *              required: false
+ *              name: id
+ *      responses:
+ *          200: 
+ *              description: successfully
+ */
+
+/**
+ * @swagger
  * /api/category/delete-category:
  *  delete:
  *      summary: delete catergory

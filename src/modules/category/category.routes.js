@@ -40,6 +40,7 @@ router.post("/create-category", upload.single('file'), CategoryController.addNew
 router.put("/update-category", upload.single('file'), CategoryController.updateCategory)
 router.patch("/toggle-category-status", CategoryController.toggleCategoryStatus)
 router.get("/get-all-categories", CategoryController.getAllCategorys)
+router.get("/get-category-byId", CategoryController.getCategoryById)
 router.delete("/delete-Category", CategoryController.deleteCategory)
 
 module.exports = {

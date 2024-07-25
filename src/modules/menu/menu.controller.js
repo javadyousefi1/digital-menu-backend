@@ -72,6 +72,27 @@ class MenuController extends Controller {
         }
     }
 
+    
+    async getMenuById(req, res, next) {
+
+        try {
+            const { id } = req.query;
+            if (!id) next(createError.BadRequest("you dont sent id !"))
+
+            const reuslt = await this.isMenuidAlreadyExistsById(id, next)
+
+
+            res.status(200).json({
+                statusCode: res.statusCode,
+                message: "Menu gets successfully",
+                data: reuslt
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
     async updateMenu(req, res, next) {
         try {
             const { title, text, categoryId, isActive, price, offPrice, id } = req.body;

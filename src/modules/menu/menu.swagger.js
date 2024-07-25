@@ -125,6 +125,23 @@
 
 /**
  * @swagger
+ * /api/menu/get-menu-byId:
+ *  get:
+ *      summary: get menu by id
+ *      tags:
+ *          -   Menu
+ *      parameters:
+ *          -   in: query
+ *              required: false
+ *              name: id
+ *      responses:
+ *          200: 
+ *              description: successfully
+ */
+
+
+/**
+ * @swagger
  * /api/menu/delete-menu:
  *  delete:
  *      summary: delete menu
