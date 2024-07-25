@@ -24,7 +24,7 @@
  *                              description: The file image for the category post (must be a valid image file)
  *                          persent:
  *                              type: number
- *                              description: a number between 30 until 80
+ *                              description: a number between 20 until 80
  *      responses:
  *          201:
  *              description: category created successfully

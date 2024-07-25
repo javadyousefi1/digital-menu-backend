@@ -12,13 +12,12 @@ class ToolsController extends Controller {
             const file = req.file;
             const { persent } = req.body;
 
-
             if (!file) {
-                return res.status(400).send("File is required.");
+                return res.status(400).json({ message: "File is required.", statusCode: res.statusCode });
             }
 
             if (+persent < 20 || +persent > 80) {
-                return res.status(400).send("The percentage should be between 20 and 80.");
+                return res.status(400).json({ message: "The percentage should be between 20 and 80.", statusCode: res.statusCode });
             }
 
             // Process image with Sharp to compress it
