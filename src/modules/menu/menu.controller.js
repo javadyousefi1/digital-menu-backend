@@ -72,7 +72,7 @@ class MenuController extends Controller {
         }
     }
 
-    
+
     async getMenuById(req, res, next) {
 
         try {
@@ -128,13 +128,14 @@ class MenuController extends Controller {
 
 
     async deleteMenu(req, res, next) {
-        const { id } = req.query;
-        if (!id) next(createError.BadRequest("you dont sent id !"))
-        const willBeDeletedMenu = await this.isMenuidAlreadyExistsById(id, next)
         try {
+            const { id } = req.query;
+            if (!id) next(createError.BadRequest("you dont sent id !"))
+            const willBeDeletedMenu = await this.isMenuidAlreadyExistsById(id, next)
+            console.log(willBeDeletedMenu)
             const blogs = await this.#model.deleteOne({ _id: id });
             // delete image
-            const blogImageName = willBeDeletedMenu?.image.split("/").at(-1)
+            const blogImageName = willBeDeletedMenu?.image?.path.split("/").at(-1)
             let imagePath = path.join(__dirname, `../../../uploads/${blogImageName}`)
             if (fs.existsSync(imagePath)) {
                 await fs.unlinkSync(imagePath);
@@ -143,7 +144,7 @@ class MenuController extends Controller {
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "menu deleted successfully",
-                data: blogs._id
+                // data: blogs._id
             })
         } catch (error) {
             next(error)
