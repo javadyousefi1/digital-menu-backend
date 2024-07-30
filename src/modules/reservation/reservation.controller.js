@@ -19,8 +19,8 @@ class ReservationController extends Controller {
     async addNewReservation(req, res, next) {
         try {
             // get data from body
-            const { name, date, text, deskNumber } = req.body;
-            const newReservation = { name, date, text, deskNumber }
+            const { name, date, text, deskNumber ,phone} = req.body;
+            const newReservation = { name, date, text, deskNumber ,phone}
             // insert new category to DB
             const newReservationCreated = await this.#model.create(newReservation);
             res.status(200).json({
@@ -34,8 +34,8 @@ class ReservationController extends Controller {
     }
 
     async updateReservation(req, res, next) {
-        const { name, date, text, deskNumber, id } = req.body;
-        const updatedReservation = { name, date, text, deskNumber };
+        const { name, date, text, deskNumber, id ,phone } = req.body;
+        const updatedReservation = { name, date, text, deskNumber ,phone};
         await this.isReservationidAlreadyExistsById(id, next)
         try {
 
@@ -69,14 +69,13 @@ class ReservationController extends Controller {
     }
 
 
-    async getCategoryById(req, res, next) {
+    async getReservationById(req, res, next) {
 
         try {
             const { id } = req.query;
             if (!id) next(createError.BadRequest("you dont sent id !"))
 
             const reuslt = await this.isReservationidAlreadyExistsById(id, next)
-
 
             res.status(200).json({
                 statusCode: res.statusCode,

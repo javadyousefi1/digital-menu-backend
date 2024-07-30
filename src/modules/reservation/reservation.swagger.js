@@ -13,12 +13,15 @@
  *              type: object
  *              required:
  *                  -   name
+ *                  -   phone
  *                  -   date
  *                  -   text
  *                  -   deskNumber
  *                  -   icon
  *              properties:
  *                  name:
+ *                      type: string
+ *                  phone:
  *                      type: string
  *                  date:
  *                      type: string
@@ -37,6 +40,7 @@
  *              required:
  *                  -   id
  *                  -   name
+ *                  -   phone
  *                  -   date
  *                  -   text
  *                  -   deskNumber
@@ -45,6 +49,8 @@
  *                  id:
  *                      type: string
  *                  name:
+ *                      type: string
+ *                  phone:
  *                      type: string
  *                  date:
  *                      type: string
@@ -139,11 +145,11 @@
 
 /**
  * @swagger
- * /api/category/get-category-byId:
+ * /api/reservation/get-reservation-byId:
  *  get:
- *      summary: get category by id
+ *      summary: get reservation by id
  *      tags:
- *          -   Category
+ *          -   Reservation
  *      parameters:
  *          -   in: query
  *              required: false
