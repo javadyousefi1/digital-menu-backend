@@ -4,7 +4,7 @@ const Controller = require('../../common/controllers/controller')
 const { orderModel } = require('./order.model')
 // error handling
 const createError = require("http-errors");
-const { paginate } = require('../../utils/helpers');
+const { paginate, generateUniqueId } = require('../../utils/helpers');
 const { getSocket } = require('../../socket/socketHandler');
 const { menuModel } = require('../menu/menu.model');
 
@@ -23,7 +23,8 @@ class OrderController extends Controller {
             const { deskNumber, order, status } = req.body;
             const { totalPrice, mainOrderList } = await this.checkExistMenuId(order, next)
 
-            const neworder = { deskNumber, status, totalPrice, order: mainOrderList };
+            const orderCode = generateUniqueId()
+            const neworder = { deskNumber, status, totalPrice, order: mainOrderList, orderCode };
 
             // insert new order to DB
             const newOrderCreated = await this.#model.create(neworder);
@@ -43,11 +44,14 @@ class OrderController extends Controller {
 
     async updateOrder(req, res, next) {
         try {
+
             // get data from body
             const { deskNumber, order, status, id } = req.body;
+            const prevData = await this.isOrderidAlreadyExistsById(id, next)
+
             const { totalPrice, mainOrderList } = await this.checkExistMenuId(order, next)
 
-            const neworder = { deskNumber, status, totalPrice, order: mainOrderList };
+            const neworder = { deskNumber, status, totalPrice, order: mainOrderList, orderCode: prevData.orderCode };
 
             // insert new order to DB
             const newOrderUpdated = await this.#model.updateOne({ _id: id }, neworder);
@@ -57,7 +61,7 @@ class OrderController extends Controller {
 
             res.status(200).json({
                 statusCode: res.statusCode,
-                message: "order added successfully",
+                message: "order updated successfully",
                 data: newOrderUpdated
             })
         } catch (error) {
@@ -100,11 +104,42 @@ class OrderController extends Controller {
         }
     }
 
+    async changeOrderStatus(req, res, next) {
+        try {
+            const { orderId, status } = req.body
+            if (!isValidObjectId(orderId)) throw new createError.BadRequest("your order id is not valid")
+
+            await this.#model.findOneAndUpdate(
+                { _id: orderId },
+                [
+                    {
+                        $set: {
+                            status: status
+                        }
+                    }
+                ],
+                { new: true } // Return the updated document
+            );
+
+            res.status(200).json({
+                statusCode: res.statusCode,
+                message: "order status changed successfully",
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
     async isOrderidAlreadyExistsById(id, next = () => { }) {
         try {
             if (!isValidObjectId(id)) throw new createError.BadRequest("your order id is not valid")
-            const foundBlog = await this.#model.countDocuments({ _id: id })
-            if (!foundBlog) throw new createError.NotFound("not found a order with this id !")
+            const foundOrder = await this.#model.findOne({ _id: id })
+            if (!foundOrder) {
+                throw new createError.NotFound("not found a order with this id !")
+            } else {
+                return foundOrder
+            }
         } catch (error) {
             next(error)
         }

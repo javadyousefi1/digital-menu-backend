@@ -136,3 +136,52 @@
  *          200: 
  *              description: successfully
  */
+
+
+/**
+ * @swagger
+ * /api/order/change-order-status:
+ *  patch:
+ *      summary: change order status
+ *      tags:
+ *          -   Order
+ *      requestBody:
+ *          content:
+ *              application/x-www-form-urlencoded:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          orderId:
+ *                              type: string
+ *                          status:
+ *                              type: integer
+ *                              enum:
+ *                                  - 1
+ *                                  - 2
+ *                                  - 3
+ *                                  - 4
+ *      responses:
+ *          '200':
+ *              description: changed
+ */
+/**
+ * @swagger
+ * components:
+ *     schemas:
+ *         ChangeOrderStatusURL:
+ *             type: object
+ *             required:
+ *                 -   orderId
+ *                 -   status
+ *                 -   icon
+ *             properties:
+ *                 orderId:
+ *                     type: string
+ *                 status:
+ *                     type: integer
+ *                     enum:
+ *                         - 1
+ *                         - 2
+ *                         - 3
+ *                         - 4
+ */

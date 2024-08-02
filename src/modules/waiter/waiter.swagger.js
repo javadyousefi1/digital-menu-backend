@@ -13,7 +13,6 @@
  *              type: object
  *              required:
  *                  -   deskNumber
- *                  -   icon
  *              properties:
  *                  deskNumber:
  *                      type: number
@@ -29,7 +28,7 @@
  *          -   Waiter
  *      requestBody:
  *          content:
- *              application/json:
+ *              application/x-www-form-urlencoded:
  *                  schema:
  *                      $ref: '#/components/schemas/CreateWaiter'
  *      responses:

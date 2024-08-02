@@ -2,6 +2,7 @@ const { Schema, model } = require("mongoose");
 const { menuSchema } = require("../menu/menu.model");
 
 const orderSchema = new Schema({
+    orderCode: { type: String, required: true },
     deskNumber: { type: Number, required: true },
     status: { type: Number, required: true, default: 1 },
     totalPrice: { type: Number, required: true, },
