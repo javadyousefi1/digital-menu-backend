@@ -31,13 +31,13 @@ async function paginate(model, query, pageSize = 10, pageIndex = 1, populate) {
     const hasNextPage = pageIndex < totalPages;
 
     return {
-        data,
         totalCount,
         pageSize,
         pageIndex,
         totalPages,
         hasPrevPage,
         hasNextPage,
+        data,
     };
 }
 

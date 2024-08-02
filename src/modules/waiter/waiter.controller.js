@@ -5,6 +5,7 @@ const { waiterModel } = require('./waiter.model')
 // error handling
 const createError = require("http-errors");
 const { paginate } = require('../../utils/helpers');
+const { getSocket } = require('../../socket/socketHandler');
 
 class waiterController extends Controller {
     #model
@@ -20,6 +21,12 @@ class waiterController extends Controller {
             const newwaiter = { deskNumber };
             // insert new waiter to DB
             const newWaiterCreated = await this.#model.create(newwaiter);
+
+
+            // Get Socket.io instance and emit an event
+            const io = await getSocket();
+            await io.emit('waiterAdded', newWaiterCreated);
+
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "waiter added successfully",

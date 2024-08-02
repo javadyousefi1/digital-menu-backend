@@ -2,16 +2,16 @@
 FROM node
 
 # In /app we set our fate,
-WORKDIR /app
+WORKDIR /
 
 # Copy package.json to know,
-COPY package.json /app
+COPY package.json /
 
 # Install the things we need to grow,
 RUN npm install
 
 # Copy all files, to /app, behold,
-COPY . /app
+COPY . /
 
 # Open port three thousand, bold,
 EXPOSE 3000
