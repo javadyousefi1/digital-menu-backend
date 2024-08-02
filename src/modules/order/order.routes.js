@@ -7,6 +7,7 @@ const { checkIsAdmin } = require("../../common/guards/auth.guard")
 router.post("/create-order", OrderController.addNewOrder)
 router.get("/get-all-orders", OrderController.getAllorders)
 router.delete("/delete-order", OrderController.deleteorder)
+router.put("/update-order", OrderController.updateOrder)
 
 module.exports = {
     orderRoutes: router

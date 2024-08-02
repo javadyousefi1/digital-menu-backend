@@ -1,7 +1,7 @@
 /**
  * @swagger
  * tags:
- *   name: Orders
+ *   name: Order
  *   description: Order management and operations
  */
 
@@ -15,6 +15,41 @@
  *         - deskNumber
  *         - order
  *       properties:
+ *         deskNumber:
+ *           type: number
+ *           description: The desk number associated with the order
+ *           example: 12
+ *         order:
+ *           type: array
+ *           description: Array of menu items in the order
+ *           items:
+ *             type: object
+ *             properties:
+ *               menuId:
+ *                 type: string
+ *                 description: The ID of the menu item
+ *                 example: 610d1f77bcf86cd799439011
+ *               count:
+ *                 type: number
+ *                 description: The number of times the menu item is ordered
+ *                 example: 2
+ */
+
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     UpdateOrder:
+ *       type: object
+ *       required:
+ *         - deskNumber
+ *         - order
+ *       properties:
+ *         id:
+ *           type: number
+ *           description: The id of upodated order
+ *           example: 610d1f77bcf86cd799439011
  *         deskNumber:
  *           type: number
  *           description: The desk number associated with the order
@@ -50,6 +85,22 @@
  *      responses:
  *          201: 
  *              description: created
+ */
+/**
+ * @swagger
+ * /api/order/update-order:
+ *  put:
+ *      summary: update new order
+ *      tags:
+ *          -   Order
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/UpdateOrder'
+ *      responses:
+ *          200: 
+ *              description: updated
  */
 
 /**

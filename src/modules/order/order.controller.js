@@ -23,7 +23,7 @@ class OrderController extends Controller {
             const { deskNumber, order, status } = req.body;
             const { totalPrice, mainOrderList } = await this.checkExistMenuId(order, next)
 
-            const neworder = { deskNumber, order, status, mainOrderList, totalPrice };
+            const neworder = { deskNumber, status, totalPrice, order: mainOrderList };
 
             // insert new order to DB
             const newOrderCreated = await this.#model.create(neworder);
@@ -40,6 +40,31 @@ class OrderController extends Controller {
             next(error)
         }
     }
+
+    async updateOrder(req, res, next) {
+        try {
+            // get data from body
+            const { deskNumber, order, status, id } = req.body;
+            const { totalPrice, mainOrderList } = await this.checkExistMenuId(order, next)
+
+            const neworder = { deskNumber, status, totalPrice, order: mainOrderList };
+
+            // insert new order to DB
+            const newOrderUpdated = await this.#model.updateOne({ _id: id }, neworder);
+            // Get Socket.io instance and emit an event
+            const io = await getSocket();
+            await io.emit('orderUpdated', newOrderUpdated);
+
+            res.status(200).json({
+                statusCode: res.statusCode,
+                message: "order added successfully",
+                data: newOrderUpdated
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
 
 
     async getAllorders(req, res, next) {
@@ -86,29 +111,35 @@ class OrderController extends Controller {
     }
 
 
-
-
     async checkExistMenuId(orderList, next) {
         try {
             let totalPrice = 0;
 
             // Map over the orderList and fetch each menu item's details
             const menuDetailsPromises = orderList.map(async (o) => {
-                const result = await this.getMenu(o.menuId, next);
+                let result = await this.getMenu(o.menuId, next);
                 if (result) {
                     if (!result.isActive) throw createError.BadRequest("one or more of menu items are not active");
-                    return result
+                    // Convert the Mongoose document to a plain object
+                    const plainResult = result.toObject();
+                    delete plainResult.createdAt
+                    delete plainResult.updatedAt
+                    delete plainResult.isActive
+                    // Add the count property to the plain object
+                    plainResult.count = o.count;
+                    return plainResult;
                 } else {
                     throw createError.BadRequest("menu id is not valid");
                 }
             });
+
             // Wait for all promises to resolve and sum up the results
             const mainOrderList = await Promise.all(menuDetailsPromises);
             totalPrice = mainOrderList.reduce((acc, curr) => {
                 if (curr.offPrice > 0) {
-                    return acc + curr.offPrice
+                    return acc + curr.offPrice * curr.count; // Multiply by count to get the total price for each item
                 } else {
-                    return acc + curr.price
+                    return acc + curr.price * curr.count; // Multiply by count to get the total price for each item
                 }
             }, 0);
 
@@ -118,6 +149,7 @@ class OrderController extends Controller {
             next(error);
         }
     }
+
 
 
     async getMenu(id, next) {
