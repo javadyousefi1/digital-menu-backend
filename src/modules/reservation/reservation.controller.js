@@ -7,7 +7,7 @@ const createError = require("http-errors");
 // path
 const path = require('path');
 const fs = require('fs');
-const { paginate } = require('../../utils/helpers.js');
+const { paginate, buildSearchQuery } = require('../../utils/helpers.js');
 
 class ReservationController extends Controller {
     #model
@@ -19,8 +19,8 @@ class ReservationController extends Controller {
     async addNewReservation(req, res, next) {
         try {
             // get data from body
-            const { name, date, text, deskNumber ,phone} = req.body;
-            const newReservation = { name, date, text, deskNumber ,phone}
+            const { name, date, text, deskNumber, phone } = req.body;
+            const newReservation = { name, date, text, deskNumber, phone }
             // insert new category to DB
             const newReservationCreated = await this.#model.create(newReservation);
             res.status(200).json({
@@ -34,8 +34,8 @@ class ReservationController extends Controller {
     }
 
     async updateReservation(req, res, next) {
-        const { name, date, text, deskNumber, id ,phone } = req.body;
-        const updatedReservation = { name, date, text, deskNumber ,phone};
+        const { name, date, text, deskNumber, id, phone } = req.body;
+        const updatedReservation = { name, date, text, deskNumber, phone };
         await this.isReservationidAlreadyExistsById(id, next)
         try {
 
@@ -53,11 +53,12 @@ class ReservationController extends Controller {
 
     async getAllReservations(req, res, next) {
         try {
-            const { pageSize, pageIndex } = req.query
+            const { pageSize, pageIndex, search } = req.query;
 
-            const paginateData = await paginate(this.#model, {}, pageSize, pageIndex)
+            // Use the helper to build the search query
+            const searchQuery = buildSearchQuery(search,"name");
 
-            await this.#model.find({});
+            const paginateData = await paginate(this.#model, searchQuery, pageSize, pageIndex);
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "all Reservations resived successfully",

@@ -4,7 +4,7 @@ const Controller = require('../../common/controllers/controller')
 const { suggestionsModel } = require('./suggestions.model')
 // error handling
 const createError = require("http-errors");
-const { paginate } = require('../../utils/helpers');
+const { paginate, buildSearchQuery } = require('../../utils/helpers');
 
 class SuggestionsController extends Controller {
     #model
@@ -36,11 +36,12 @@ class SuggestionsController extends Controller {
 
     async getAllSuggestionss(req, res, next) {
         try {
-            const { pageSize, pageIndex } = req.query
+            const { pageSize, pageIndex, search } = req.query;
 
-            const paginateData = await paginate(this.#model, {}, pageSize, pageIndex)
+            // Use the helper to build the search query
+            const searchQuery = buildSearchQuery(search,"subject");
 
-            const Suggestionss = await this.#model.find({});
+            const paginateData = await paginate(this.#model, searchQuery, pageSize, pageIndex);
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "all Suggestions resived successfully",

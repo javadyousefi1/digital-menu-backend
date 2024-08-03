@@ -10,7 +10,7 @@ const createError = require("http-errors");
 const fs = require('fs');
 // path
 const path = require('path');
-const { paginate } = require('../../utils/helpers.js');
+const { paginate, buildSearchQuery } = require('../../utils/helpers.js');
 class MenuController extends Controller {
 
     #model
@@ -56,9 +56,11 @@ class MenuController extends Controller {
 
     async getAllMenus(req, res, next) {
         try {
-            const { pageSize, pageIndex } = req.query
+            const { pageSize, pageIndex, search } = req.query
+            // Use the helper to build the search query
+            const searchQuery = buildSearchQuery(search);
 
-            const paginateData = await paginate(this.#model, {}, pageSize, pageIndex, [
+            const paginateData = await paginate(this.#model, searchQuery, pageSize, pageIndex, [
                 { path: 'categoryId', select: 'title _id' }, // Include only the 'title' of the category
             ])
 

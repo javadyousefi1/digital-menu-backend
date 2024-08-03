@@ -129,6 +129,9 @@
  *          -   in: query
  *              required: false
  *              name: pageIndex
+ *          -   in: query
+ *              required: false
+ *              name: search
  *      responses:
  *          200: 
  *              description: successfully

@@ -1,3 +1,4 @@
+
 // pagination
 async function paginate(model, query, pageSize = 10, pageIndex = 1, populate) {
     // Convert pageSize and pageIndex to numbers
@@ -54,4 +55,15 @@ function generateUniqueId() {
     return uniqueId;
 }
 
-module.exports = { paginate, generateUniqueId };
+function buildSearchQuery(searchParams, searchBy = "title") {
+    const query = {};
+
+    // If searchParams is provided, add a title regex search
+    if (searchParams) {
+        query[searchBy] = { $regex: new RegExp(searchParams, 'i') };
+    }
+
+    return query;
+}
+
+module.exports = { paginate, generateUniqueId, buildSearchQuery };
