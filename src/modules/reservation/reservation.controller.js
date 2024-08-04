@@ -56,7 +56,7 @@ class ReservationController extends Controller {
             const { pageSize, pageIndex, search } = req.query;
 
             // Use the helper to build the search query
-            const searchQuery = buildSearchQuery(search,"name");
+            const searchQuery = buildSearchQuery(search, "name");
 
             const paginateData = await paginate(this.#model, searchQuery, pageSize, pageIndex);
             res.status(200).json({
