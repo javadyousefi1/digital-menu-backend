@@ -138,6 +138,9 @@
  *          -   in: query
  *              required: false
  *              name: pageIndex
+ *          -   in: query
+ *              required: false
+ *              name: date
  *      responses:
  *          200: 
  *              description: successfully
