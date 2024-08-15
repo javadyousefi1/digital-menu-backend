@@ -10,6 +10,7 @@ const imageSchema = new Schema({
 const categorySchema = new Schema({
   title: { type: String, required: true, trim: true },
   isActive: { type: Boolean, required: true, default: true },
+  order: { type: Number, required: true, default: 0 },
   image: { type: imageSchema, required: true } // Use the subdocument schema here
 }, { timestamps: true, versionKey: false });
 

@@ -3,7 +3,6 @@ const Controller = require('../../common/controllers/controller')
 // model
 const { categoryModel } = require('./category.model')
 const { menuModel } = require('../menu/menu.model.js')
-const { MenuController } = require('../menu/menu.controller.js')
 // error handling
 const createError = require("http-errors");
 // path
@@ -27,7 +26,8 @@ class CategoryController extends Controller {
             if (!req?.file) throw new createError.BadRequest("file not sent")
             // fileUrl
             const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req?.file?.filename}`;
-            const newCategory = { title, image: { path: fileUrl, id: req.imageId }, isActive };
+            const order = await this.#model.countDocuments({}) + 1
+            const newCategory = { title, image: { path: fileUrl, id: req.imageId }, isActive, order };
 
             // check dublicate
             const isAlreadyExist = await this.#model.countDocuments({ title: title.trim() })

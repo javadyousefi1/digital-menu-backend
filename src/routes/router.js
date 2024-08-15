@@ -6,6 +6,7 @@ const { toolsRoutes } = require("../modules/tools/tools.routes");
 const { reservationRoutes } = require("../modules/reservation/reservation.routes");
 const { waiterRoutes } = require("../modules/waiter/waiter.routes");
 const { orderRoutes } = require("../modules/order/order.routes");
+const { frontOfficeRoutes } = require("../modules/frontOffice/frontOffice.routes");
 const router = require("express").Router();
 
 router.get("/", (req, res) => {
@@ -20,6 +21,7 @@ router.use("/tools", toolsRoutes)
 router.use("/reservation", reservationRoutes)
 router.use("/waiter", waiterRoutes)
 router.use("/order", orderRoutes)
+router.use("/frontoffice", frontOfficeRoutes)
 
 
 
