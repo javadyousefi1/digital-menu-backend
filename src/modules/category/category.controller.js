@@ -127,7 +127,7 @@ class CategoryController extends Controller {
             const isExsitedMenu = await this.#menuModel.countDocuments({ categoryId: id });
 
             const willBeDeletedBlog = await this.isCategoryidAlreadyExistsById(id, next)
-            if (isExsitedMenu > 0) throw new createError.BadRequest("a menu exsited with this category")
+            if (isExsitedMenu > 0) throw new createError.BadRequest("در منو آیتمی با این دسته بندی درج شده است")
             const Categorys = await this.#model.deleteOne({ _id: id });
             // delete image
             const blogImageName = willBeDeletedBlog?.image?.path.split("/").at(-1)

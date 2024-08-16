@@ -21,7 +21,7 @@ class FrontOfficeController extends Controller {
     async getAllCategorys(req, res, next) {
         try {
 
-            const categories = await this.#categoryModel.find({}, "title isActive order image.path").sort({ createdAt: -1 })
+            const categories = await this.#categoryModel.find({}, "title isActive order image.path").sort({ order:1 })
 
             res.status(200).json({
                 statusCode: res.statusCode,
@@ -43,7 +43,7 @@ class FrontOfficeController extends Controller {
             // Convert categoryId to ObjectId if it's a string
             const categoryObjectId = new mongoose.Types.ObjectId(categoryId);
 
-            const menus = await this.#menuModel.find({ "categoryId": categoryObjectId }, "title price offPrice isActive image.path").sort({ createdAt: -1 });
+            const menus = await this.#menuModel.find({ "categoryId": categoryObjectId }, "title text price offPrice isActive image.path").sort({ createdAt: -1 });
 
             res.status(200).json({
                 statusCode: res.statusCode,
