@@ -16,7 +16,6 @@ const captchaHandler = async (req, res, next) => {
                 },
             }
         );
-        console.log(response?.data)
         if (response?.data.success === true) {
             req.captchaIsValid = true
             next()
