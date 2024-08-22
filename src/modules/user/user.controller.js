@@ -50,7 +50,9 @@ class UserController extends Controller {
             // get data from body
             const { userName, password } = req.body;
 
-            if (!(userName === "admin" && password === "admin")) {
+            const result = await this.#model.countDocuments({ userName, password })
+
+            if (result === 0) {
                 throw new createError.Unauthorized("username or password is invalid")
             }
             // check dublicate
@@ -59,7 +61,7 @@ class UserController extends Controller {
             // set token on cookie
             const token = await JwtController.generateNewToken(userName, next);
             // set token on cookie
-            res.cookie('menu_jwt', token, { maxAge: 60 * 60 * 1000, httpOnly: true, secure: process.env.NODE_ENV === NodeEnv.Production });
+            res.cookie('admin_panel_jwt', token, { maxAge: 60 * 60 * 1000, httpOnly: true, secure: process.env.NODE_ENV === NodeEnv.Production });
             // response
             res.status(200).json({
                 statusCode: res.statusCode,
