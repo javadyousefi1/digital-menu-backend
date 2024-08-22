@@ -40,6 +40,10 @@ class MenuController extends Controller {
             if (alreadyExsitWithThisTitle !== 0) throw new createError.BadRequest("menu already exists with this title")
             // create menu                 
             const newMenuCreated = await this.#model.create(newMenu);
+            // send signal
+            // Get Socket.io instance and emit an event
+            const io = await getSocket();
+            await io.emit('menuChanged', { categoryId });
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "menu added successfully",
@@ -117,7 +121,11 @@ class MenuController extends Controller {
                 updatedCategory.image = prevData?.image;
             }
 
-            const result = await this.#model.updateOne({ _id: id }, { $set: updatedCategory });
+            await this.#model.updateOne({ _id: id }, { $set: updatedCategory });
+
+            // Get Socket.io instance and emit an event
+            const io = await getSocket();
+            await io.emit('menuChanged', { categoryId });
 
             res.status(200).json({
                 statusCode: res.statusCode,
@@ -143,6 +151,11 @@ class MenuController extends Controller {
                 await fs.unlinkSync(imagePath);
             }
 
+
+            // Get Socket.io instance and emit an event
+            const io = await getSocket();
+            await io.emit('menuChanged', { categoryId: willBeDeletedMenu?.categoryId });
+
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "menu deleted successfully",
@@ -157,7 +170,7 @@ class MenuController extends Controller {
         try {
             const { menuId } = req.body
             if (!isValidObjectId(menuId)) throw new createError.BadRequest("your menu id is not valid")
-
+            const prevData = await this.isMenuidAlreadyExistsById(menuId, next)
             await this.#model.findOneAndUpdate(
                 { _id: menuId }, // Filter to find the user by ID
                 [
@@ -169,6 +182,10 @@ class MenuController extends Controller {
                 ],
                 { new: true } // Return the updated document
             );
+
+            // Get Socket.io instance and emit an event
+            const io = await getSocket();
+            await io.emit('menuChanged', { categoryId: prevData.categoryId });
 
             res.status(200).json({
                 statusCode: res.statusCode,
