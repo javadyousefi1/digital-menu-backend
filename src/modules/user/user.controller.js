@@ -93,9 +93,9 @@ class UserController extends Controller {
             // reject if token is not available
             if (!token) throw new createError.Unauthorized("user not logged in")
             const tokenData = await jwt.verify(token, process.env.JWT_SECRET)
-            // check email is in user model or not
-            if ("email" in tokenData) {
-                const userData = await userModel.findOne({ email: tokenData.email }, { createdAt: 0, updatedAt: 0, _id: 0, password: 0 }).lean()
+            // check userName is in user model or not
+            if ("userName" in tokenData) {
+                const userData = await userModel.findOne({ userName: tokenData.userName }, { createdAt: 0, updatedAt: 0, _id: 0, password: 0 }).lean()
                 return res.status(200).json({
                     statusCode: res.statusCode,
                     message: "user data gets successfully",

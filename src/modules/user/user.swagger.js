@@ -66,6 +66,18 @@
 
 /**
  * @swagger
+ * /api/user//get-current-user:
+ *  get:
+ *      summary: get current user
+ *      tags:
+ *          -   User
+ *      responses:
+ *          200: 
+ *              description: login succsefully
+ */
+
+/**
+ * @swagger
  * /api/user/register-user:
  *  post:
  *      summary: registrer user
