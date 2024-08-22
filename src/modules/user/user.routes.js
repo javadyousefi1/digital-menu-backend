@@ -4,7 +4,7 @@ const { captchaHandler } = require("../../common/captcha/captchaHandler");
 const router = require("express").Router();
 
 router.post("/login-user", captchaHandler,UserController.loginUser)
-// router.post("/register-user", UserController.registerUser)
+router.post("/register-user", UserController.registerUser)
 // router.post("/add-admin-role",  UserController.addAdminRoleToUser)
 // router.post("/add-user-role", checkIsAdmin, UserController.addUserRoleToUser)
 // router.get("/get-all-users", checkIsAdmin, UserController.getAllUsers)

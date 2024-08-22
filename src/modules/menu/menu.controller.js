@@ -11,6 +11,7 @@ const fs = require('fs');
 // path
 const path = require('path');
 const { paginate, buildSearchQuery } = require('../../utils/helpers.js');
+const { getSocket } = require('../../socket/socketHandler.js');
 class MenuController extends Controller {
 
     #model

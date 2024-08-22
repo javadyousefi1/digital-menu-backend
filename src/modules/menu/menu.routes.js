@@ -39,7 +39,7 @@ const upload = multer({
 
 router.post("/create-menu", upload.single('file'), MenuController.addNewMenu)
 router.put("/update-menu", upload.single('file'), MenuController.updateMenu)
-router.get("/get-all-menus", MenuController.getAllMenus)
+router.get("/get-all-menus", checkIsAdmin, MenuController.getAllMenus)
 router.get("/get-menu-byId", MenuController.getMenuById)
 router.delete("/delete-menu", MenuController.deleteMenu)
 router.patch("/toggle-menu-status", MenuController.toggleMenuStatus)

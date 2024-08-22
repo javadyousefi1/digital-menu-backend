@@ -13,6 +13,7 @@ function initializeSocket(server) {
         },
     });
     io.on("connection", (socket) => {
+  
         console.log(`User Connected: ${socket.id}`);
 
         socket.on("disconnect", () => {

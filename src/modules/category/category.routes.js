@@ -36,12 +36,12 @@ const upload = multer({
 });
 
 
-router.post("/create-category", upload.single('file'), CategoryController.addNewCategory)
-router.put("/update-category", upload.single('file'), CategoryController.updateCategory)
-router.patch("/toggle-category-status", CategoryController.toggleCategoryStatus)
-router.get("/get-all-categories", CategoryController.getAllCategorys)
-router.get("/get-category-byId", CategoryController.getCategoryById)
-router.delete("/delete-Category", CategoryController.deleteCategory)
+router.post("/create-category", checkIsAdmin, upload.single('file'), CategoryController.addNewCategory)
+router.put("/update-category", checkIsAdmin, upload.single('file'), CategoryController.updateCategory)
+router.patch("/toggle-category-status", checkIsAdmin, CategoryController.toggleCategoryStatus)
+router.get("/get-all-categories", checkIsAdmin, CategoryController.getAllCategorys)
+router.get("/get-category-byId", checkIsAdmin, CategoryController.getCategoryById)
+router.delete("/delete-Category", checkIsAdmin, CategoryController.deleteCategory)
 
 module.exports = {
     categoryRoutes: router

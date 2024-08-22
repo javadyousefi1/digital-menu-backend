@@ -13,16 +13,13 @@
  *          CreateUser:
  *              type: object
  *              required:
- *                  -   email
  *                  -   password
- *                  -   name
+ *                  -   userName
  *                  -   icon
  *              properties:
- *                  email:
- *                      type: string
  *                  password:
  *                      type: string
- *                  name:
+ *                  userName:
  *                      type: string
  *          LoginUser:
  *              type: object
@@ -62,6 +59,23 @@
  *              application/json:
  *                  schema:
  *                      $ref: '#/components/schemas/LoginUser'
+ *      responses:
+ *          200: 
+ *              description: login succsefully
+ */
+
+/**
+ * @swagger
+ * /api/user/register-user:
+ *  post:
+ *      summary: registrer user
+ *      tags:
+ *          -   User
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/CreateUser'
  *      responses:
  *          200: 
  *              description: login succsefully
