@@ -40,40 +40,35 @@ class waiterController extends Controller {
 
     async getAllwaiters(req, res, next) {
         try {
-            const { pageSize, pageIndex } = req.query
-
-            // delete yesterday data
-            // Get the current date
+            const { pageSize, pageIndex } = req.query;
+    
+            // Get the current date and time
             const today = new Date();
-
-            // Calculate the start of yesterday
-            const startOfYesterday = new Date(today);
-            startOfYesterday.setDate(today.getDate() - 1);
-            startOfYesterday.setHours(0, 0, 0, 0);
-
-            // Calculate the end of yesterday
-            const endOfYesterday = new Date(today);
-            endOfYesterday.setDate(today.getDate() - 1);
-            endOfYesterday.setHours(23, 59, 59, 999);
-
+    
+            // Calculate the start of today (midnight)
+            const startOfToday = new Date(today);
+            startOfToday.setHours(0, 0, 0, 0);
+    
+            // Delete all data created before the start of today
             await this.#model.deleteMany({
                 createdAt: {
-                    $gte: startOfYesterday,
-                    $lt: endOfYesterday
+                    $lt: startOfToday
                 }
             });
-
-            const paginateData = await paginate(this.#model, {}, pageSize, pageIndex)
-
+    
+            // Paginate the remaining data
+            const paginateData = await paginate(this.#model, {}, pageSize, pageIndex);
+    
             res.status(200).json({
                 statusCode: res.statusCode,
-                message: "all waiter resived successfully",
+                message: "All waiters received successfully",
                 ...paginateData
-            })
+            });
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
+    
 
     async deletewaiter(req, res, next) {
         try {

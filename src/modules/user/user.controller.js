@@ -53,7 +53,7 @@ class UserController extends Controller {
             const result = await this.#model.countDocuments({ userName, password })
 
             if (result === 0) {
-                throw new createError.Unauthorized("username or password is invalid")
+                throw new createError.Unauthorized("نام کاربری یا رمز عبور اشتباه است")
             }
             // check dublicate
             // const userData = await this.#model.findOne({ email: email.trim(), password: password.trim() })

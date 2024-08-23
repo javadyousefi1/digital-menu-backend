@@ -32,7 +32,7 @@ const upload = multer({
         if (file.mimetype.startsWith("image/")) {
             cb(null, true);
         } else {
-            cb(new Error('Invalid file type just accept image types !'), false);
+            cb(new Error('فقط پسو.ند های عکس مورد تایید است'), false);
         }
     }
 });

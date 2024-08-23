@@ -52,47 +52,34 @@ class ReservationController extends Controller {
 
     async getAllReservations(req, res, next) {
         try {
-            const { pageSize, pageIndex, search, date } = req.query;
-    
-            // Validate date format
-            if (date && !/^(\d{4}-\d{2})$/.test(date)) {
-                throw new Error('Invalid date format. Expected YYYY-MM.');
-            }
-    
-            // Default values for year and month if not provided
-            let year = new Date().getFullYear();
-            let month = new Date().getMonth() + 1; // Months are zero-based in JavaScript
-    
-            // Extract year and month from the input date if provided
-            if (date) {
-                const [yearStr, monthStr] = date.split('-');
-                year = parseInt(yearStr);
-                month = parseInt(monthStr);
-            }
-    
-            // Convert to UTC for consistency
-            const startDateUTC = new Date(Date.UTC(year, month - 1, 1));
-            const endDateUTC = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
-    
+            const { pageSize, pageIndex, search, date: isoDateString } = req.query;
+
             // Use the helper to build the search query
             const searchQuery = buildSearchQuery(search, "name");
-    
+
             // Initialize an empty object for the final query parameters
             let finalQueryParams = {
                 ...searchQuery
             };
-    
+
             // Conditionally add the date filter
-            if (date) {
+            if (isoDateString) {
+
+                const date = new Date(isoDateString);
+                const year = date.getFullYear();
+                const month = date.getMonth();
+
                 finalQueryParams.date = {
-                    $gte: startDateUTC,
-                    $lt: endDateUTC
+                    $gte: new Date(year, month, 1),
+                    $lt: new Date(year, month + 1, 1)
                 };
             }
-    
+
+            console.log(finalQueryParams, "finalQueryParams")
+
             // Update the query with the date filter if applicable
             const paginateData = await paginate(this.#model, finalQueryParams, pageSize, pageIndex);
-    
+
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "All Reservations received successfully",
@@ -102,7 +89,7 @@ class ReservationController extends Controller {
             next(error);
         }
     }
-    
+
 
 
     async getReservationById(req, res, next) {
