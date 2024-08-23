@@ -10,7 +10,7 @@ class JwtController extends Controller {
 
     async generateNewToken(payload, next) {
         try {
-            return await jwt.sign({ userName: payload }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 1000 });
+            return await jwt.sign({ userName: payload }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 * 1000 });
         } catch (error) {
             next(error);
         }
