@@ -155,7 +155,7 @@ class OrderController extends Controller {
             const menuDetailsPromises = orderList.map(async (o) => {
                 let result = await this.getMenu(o.menuId, next);
                 if (result) {
-                    if (!result.isActive) throw createError.BadRequest("one or more of menu items are not active");
+                    if (!result.isActive) throw createError.BadRequest("یکی از ایتم های منو غیر فعال است");
                     // Convert the Mongoose document to a plain object
                     const plainResult = result.toObject();
                     delete plainResult.createdAt
