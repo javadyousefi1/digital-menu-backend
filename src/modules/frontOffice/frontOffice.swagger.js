@@ -32,3 +32,39 @@
  *          200: 
  *              description: successfully
  */
+
+
+/**
+ * @swagger
+ *  components:
+ *      schemas:
+ *          CreateSuggestions:
+ *              type: object
+ *              required:
+ *                  -   subject
+ *                  -   text
+ *                  -   icon
+ *              properties:
+ *                  subject:
+ *                      type: string
+ *                  text:
+ *                      type: string
+ */
+
+
+/**
+ * @swagger
+ * /api/frontoffice/create-suggest:
+ *  post:
+ *      summary: create new suggestion
+ *      tags:
+ *          -   FrontOffice
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/CreateSuggestions'
+ *      responses:
+ *          201: 
+ *              description: created
+ */

@@ -11,15 +11,18 @@ const { paginate, buildSearchQuery } = require('../../utils/helpers.js');
 const { menuModel } = require('../menu/menu.model.js');
 const { default: mongoose, isValidObjectId } = require('mongoose');
 const { getSocket } = require('../../socket/socketHandler.js');
+const { suggestionsModel } = require("../suggestions/suggestions.model.js")
 class FrontOfficeController extends Controller {
     #categoryModel
     #menuModel
     #waiterModel
+    #Suggestmodel
     constructor() {
         super()
         this.#categoryModel = categoryModel
         this.#menuModel = menuModel
         this.#waiterModel = waiterModel
+        this.#Suggestmodel = suggestionsModel
     }
 
     async getAllCategorys(req, res, next) {
@@ -74,6 +77,27 @@ class FrontOfficeController extends Controller {
                 statusCode: res.statusCode,
                 message: "waiter added successfully",
                 data: newWaiterCreated
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async addNewSuggestions(req, res, next) {
+        try {
+            if (!req.captchaIsValid) throw new createError.BadRequest("captcha failed")
+            // get data from body
+            const { subject, text } = req.body;
+            const newSuggestions = { subject, text };
+            // check dublicate
+            // const isAlreadyExist = await this.#model.countDocuments({ subject: subject.trim(), text })
+            // if (isAlreadyExist) throw new createError.BadRequest("this suggestions already exists !")
+            // insert new suggestions to DB
+            const newSuggestionsCreated = await this.#Suggestmodel.create(newSuggestions);
+            res.status(200).json({
+                statusCode: res.statusCode,
+                message: "Suggestions added successfully",
+                data: newSuggestionsCreated
             })
         } catch (error) {
             next(error)
