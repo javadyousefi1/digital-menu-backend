@@ -44,12 +44,24 @@ async function paginate(model, query, pageSize = 10, pageIndex = 1, populate) {
 
 // Function to generate a unique ID
 function generateUniqueId() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const digits = '0123456789';
+
     let uniqueId = '';
 
+    // Generate exactly 2 random letters
+    for (let i = 0; i < 2; i++) {
+        const randomIndex = Math.floor(Math.random() * letters.length);
+        uniqueId += letters[randomIndex];
+    }
+
+    // Add a hyphen separator
+    uniqueId += '-';
+
+    // Generate 6 random digits
     for (let i = 0; i < 6; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        uniqueId += characters[randomIndex];
+        const randomIndex = Math.floor(Math.random() * digits.length);
+        uniqueId += digits[randomIndex];
     }
 
     return uniqueId;
