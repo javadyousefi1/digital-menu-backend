@@ -34,7 +34,7 @@ async function checkIsAdmin(req, res, next) {
         // check email is in user model or not
         if ("userName" in tokenData) {
             const userData = await userModel.findOne({ userName: tokenData.userName })
-            if (userData.role !== "admin") throw new createError.Unauthorized("you are not allowed to access this route");
+            if (userData.role !== "admin" && userData.role !== "garson") throw new createError.Unauthorized("you are not allowed to access this route");
             req.user = userData
             return next()
         }

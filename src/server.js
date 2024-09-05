@@ -10,7 +10,7 @@ const path = require('path');
 const serveIndex = require("serve-index");
 const http = require("http");
 const { initializeSocket } = require("./socket/socketHandler"); // Import the socket initialization function
-
+const https = require("https");
 dotenv.config();
 
 class Application {
@@ -18,7 +18,7 @@ class Application {
     #server = http.createServer(this.#app);
     #PORT = process.env.PORT || 5000;
     #DB_URI = process.env.MONGO_DB_URL;
-
+    #HTTPS_PORT = process.env.HTTPS_PORT || 443;
     constructor() {
         this.connectToDB();
         this.initClientSession();
