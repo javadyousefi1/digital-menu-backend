@@ -8,7 +8,7 @@ const { waiterRoutes } = require("../modules/waiter/waiter.routes");
 const { orderRoutes } = require("../modules/order/order.routes");
 const { frontOfficeRoutes } = require("../modules/frontOffice/frontOffice.routes");
 const { default: axios } = require("axios");
-const HolidayAPI = require('holidayapi'); 
+const HolidayAPI = require('holidayapi');
 const router = require("express").Router();
 
 router.get("/", (req, res) => {
