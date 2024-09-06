@@ -52,7 +52,7 @@ class ReservationController extends Controller {
 
     async getAllReservations(req, res, next) {
         try {
-            const { pageSize, pageIndex, search, date: isoDateString } = req.query;
+            const { pageSize, pageIndex, search, currentDate} = req.query;
 
             // Use the helper to build the search query
             const searchQuery = buildSearchQuery(search, "name");
@@ -62,20 +62,21 @@ class ReservationController extends Controller {
                 ...searchQuery
             };
 
-            // Conditionally add the date filter
-            if (isoDateString) {
-
-                const date = new Date(isoDateString);
-                const year = date.getFullYear();
-                const month = date.getMonth();
-
-                finalQueryParams.date = {
-                    $gte: new Date(year, month, 1),
-                    $lt: new Date(year, month + 1, 1)
-                };
+            let dateObj;
+            if (currentDate) {
+                const parsedDate = new Date(currentDate);
+                if (isNaN(parsedDate.getTime())) {
+                    throw new Error('Invalid date format');
+                }
+                dateObj = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
             }
 
-            console.log(finalQueryParams, "finalQueryParams")
+            if (dateObj) {
+                finalQueryParams.createdAt = {
+                    $gte: dateObj,
+                    $lt: new Date(dateObj.getFullYear(), dateObj.getMonth() + 1, dateObj.getDate())
+                };
+            }
 
             // Update the query with the date filter if applicable
             const paginateData = await paginate(this.#model, finalQueryParams, pageSize, pageIndex);

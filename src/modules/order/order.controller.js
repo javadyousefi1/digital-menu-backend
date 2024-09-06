@@ -73,21 +73,34 @@ class OrderController extends Controller {
 
     async getAllorders(req, res, next) {
         try {
-            const { pageSize, pageIndex, search } = req.query;
+            const { pageSize, pageIndex, search, fromDate, toDate, status } = req.query;
 
             // Use the helper to build the search query
             const searchQuery = buildSearchQuery(search, "orderCode");
 
+            // Add date range filter if both fromDate and toDate are provided
+            if (fromDate && toDate) {
+                searchQuery.createdAt = {
+                    $gte: new Date(fromDate), // Greater than or equal to fromDate
+                    $lte: new Date(toDate)    // Less than or equal to toDate
+                };
+            }
+
+            if (status) {
+                searchQuery.status = status
+            }
+
             const paginateData = await paginate(this.#model, searchQuery, pageSize, pageIndex);
             res.status(200).json({
                 statusCode: res.statusCode,
-                message: "all order resived successfully",
+                message: "all orders received successfully",
                 ...paginateData
-            })
+            });
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
+
 
     async deleteorder(req, res, next) {
         try {

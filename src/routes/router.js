@@ -7,6 +7,8 @@ const { reservationRoutes } = require("../modules/reservation/reservation.routes
 const { waiterRoutes } = require("../modules/waiter/waiter.routes");
 const { orderRoutes } = require("../modules/order/order.routes");
 const { frontOfficeRoutes } = require("../modules/frontOffice/frontOffice.routes");
+const { default: axios } = require("axios");
+const HolidayAPI = require('holidayapi'); 
 const router = require("express").Router();
 
 router.get("/", (req, res) => {
@@ -23,6 +25,27 @@ router.use("/waiter", waiterRoutes)
 router.use("/order", orderRoutes)
 router.use("/frontoffice", frontOfficeRoutes)
 
+
+router.get("/holiday", async (req, res) => {
+    const holidayApi = new HolidayAPI({ key: 'd256db75-f231-4db3-9549-86e5f9eff08c' });
+    try {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1; // getMonth() returns 0-based index
+
+        // Fetch holidays for the current month
+        const holidays = await holidayApi.v1.holidays({
+            country: 'US', // Change to your required country code
+            year: year,
+            month: month
+        });
+
+        res.json(holidays);
+    } catch (error) {
+        console.error('Error fetching holidays:', error);
+        res.status(500).json({ error: 'Failed to fetch holidays' });
+    }
+})
 
 
 module.exports = {
