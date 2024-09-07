@@ -9,6 +9,7 @@ const { orderRoutes } = require("../modules/order/order.routes");
 const { frontOfficeRoutes } = require("../modules/frontOffice/frontOffice.routes");
 const { default: axios } = require("axios");
 const HolidayAPI = require('holidayapi');
+const { DashboardRoutes } = require("../modules/dashboard/dashboard.routes");
 const router = require("express").Router();
 
 router.get("/", (req, res) => {
@@ -24,6 +25,7 @@ router.use("/reservation", reservationRoutes)
 router.use("/waiter", waiterRoutes)
 router.use("/order", orderRoutes)
 router.use("/frontoffice", frontOfficeRoutes)
+router.use("/dashboard", DashboardRoutes)
 
 
 router.get("/holiday", async (req, res) => {
