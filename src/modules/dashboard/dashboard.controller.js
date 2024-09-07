@@ -37,7 +37,7 @@ class DashboardController extends Controller {
             data.forEach(item => {
                 item.order.forEach(innerItem => {
                     const createdAt = new Date(String(item.createdAt)).toISOString().split('T')[0]
-                    const alreadyExisted = array.find(existingItem => existingItem.date === createdAt);
+                    const alreadyExisted = array.find(existingItem => new Date(String(existingItem.date)).toISOString().split('T')[0] === createdAt);
 
                     if (alreadyExisted) {
                         const price = (innerItem.offPrice > 0 ? innerItem.offPrice : innerItem.price) * innerItem.count;
@@ -46,7 +46,7 @@ class DashboardController extends Controller {
                         const price = (innerItem.offPrice > 0 ? innerItem.offPrice : innerItem.price) * innerItem.count;
 
                         const newRecord = {
-                            date: createdAt,
+                            date: item.createdAt,
                             price
                         };
 
