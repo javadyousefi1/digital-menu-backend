@@ -70,6 +70,28 @@ class DashboardController extends Controller {
             next(error);
         }
     }
+    async weekReportOfIncome(req, res, next) {
+        try {
+            // Get the first day of the current month in Jalali and format it to ISO string
+            const sevenDayAgo = dayjs().calendar('jalali').subtract(7, "day").toISOString();
+            const today = dayjs().calendar('jalali').toISOString();
+
+            const query = {
+                $gte: `${sevenDayAgo.slice(0, 11)}23:59:59.000Z`,
+                $lte: `${today.slice(0, 11)}23:59:59.000Z`,
+            }
+
+            const result = await this.#orderModel.find({ createdAt: query }).select('+createdAt');;
+
+            const data = [...result]
+
+            
+
+            res.json({ result });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = { DashboardController: new DashboardController() };
