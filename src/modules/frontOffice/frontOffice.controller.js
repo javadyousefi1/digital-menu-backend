@@ -85,7 +85,6 @@ class FrontOfficeController extends Controller {
 
     async addNewSuggestions(req, res, next) {
         try {
-            if (!req.captchaIsValid) throw new createError.BadRequest("captcha failed")                                   
             // get data from body
             const { subject, text } = req.body;
             const newSuggestions = { subject, text };

@@ -9,7 +9,7 @@ const { captchaHandler } = require('../../common/captcha/captchaHandler');
 
 router.get("/get-all-categories", FrontOfficeController.getAllCategorys)
 router.get("/get-all-menus-by-category", FrontOfficeController.getAllmenuByCategory)
-router.post("/request-waiter", captchaHandler, FrontOfficeController.addNewWaiter)
+router.post("/request-waiter", FrontOfficeController.addNewWaiter)
 router.post("/create-suggest", FrontOfficeController.addNewSuggestions)
 
 module.exports = {
