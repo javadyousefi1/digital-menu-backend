@@ -46,22 +46,30 @@ class UserController extends Controller {
 
     async loginUser(req, res, next) {
         try {
-            if (!req.captchaIsValid) throw new createError.BadRequest("captcha failed")
             // get data from body
-            const { userName, password } = req.body;
+            const { userName, password, token, code } = req.body;
+
+            if (!token || !code) throw Error("token or code not send")
 
             const result = await this.#model.countDocuments({ userName, password })
+
+            const captcha = await req.redis.get(token, code);
+
+            if (+captcha !== +code) {
+                return res.status(400).json({
+                    statusCode: res.statusCode,
+                    data: null,
+                    message: "کد امنیتی اشتباه است",
+                })
+            }
 
             if (result === 0) {
                 throw new createError.Unauthorized("نام کاربری یا رمز عبور اشتباه است")
             }
-            // check dublicate
-            // const userData = await this.#model.findOne({ email: email.trim(), password: password.trim() })
-            // if (!userData) throw new createError.BadRequest("email or password is not correct")
             // set token on cookie
-            const token = await JwtController.generateNewToken(userName, next);
+            const cookieToken = await JwtController.generateNewToken(userName, next);
             // set token on cookie
-            res.cookie('admin_panel_jwt', token, { maxAge: 60 * 60 * 24 * 1000, httpOnly: true, secure: process.env.NODE_ENV === NodeEnv.Production });
+            res.cookie('admin_panel_jwt', cookieToken, { maxAge: 60 * 60 * 24 * 1000, httpOnly: true, secure: process.env.NODE_ENV === NodeEnv.Production });
             // response
             res.status(200).json({
                 statusCode: res.statusCode,

@@ -3,7 +3,7 @@ const { checkIsAdmin, isAuthorized } = require("../../common/guards/auth.guard")
 const { captchaHandler } = require("../../common/captcha/captchaHandler");
 const router = require("express").Router();
 
-router.post("/login-user", captchaHandler,UserController.loginUser)
+router.post("/login-user", UserController.loginUser)
 router.post("/register-user", UserController.registerUser)
 // router.post("/add-admin-role",  UserController.addAdminRoleToUser)
 // router.post("/add-user-role", checkIsAdmin, UserController.addUserRoleToUser)

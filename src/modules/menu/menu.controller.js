@@ -32,7 +32,7 @@ class MenuController extends Controller {
             // check category id is valid or not
             await this.#CategoryController.isCategoryidAlreadyExistsById(categoryId, next)
 
-            const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+            const fileUrl = `/uploads/${req.file.filename}`;
 
             const newMenu = { text, title, categoryId, isActive, price, offPrice, image: { path: fileUrl, id: req.imageId } };
 
@@ -111,7 +111,7 @@ class MenuController extends Controller {
             let imagePath;
 
             if (req.file) {
-                const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req?.fileName}`;
+                const fileUrl = `/uploads/${req?.fileName}`;
                 updatedCategory.image = { path: fileUrl, id: req.imageId };
 
                 imagePath = path.join(__dirname, `../../../uploads/${prevData?.image.path.split("/").pop()}`);

@@ -1,7 +1,7 @@
 const { isValidObjectId, default: mongoose } = require('mongoose');
-const Controller = require('../../common/controllers/controller')
+const Controller = require('../../common/controllers/controller.js')
 // model
-const { categoryModel } = require('./category.model')
+const { categoryModel } = require('./category.model.js')
 const { menuModel } = require('../menu/menu.model.js')
 // error handling
 const createError = require("http-errors");

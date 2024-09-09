@@ -10,6 +10,7 @@ const { frontOfficeRoutes } = require("../modules/frontOffice/frontOffice.routes
 const { default: axios } = require("axios");
 const HolidayAPI = require('holidayapi');
 const { DashboardRoutes } = require("../modules/dashboard/dashboard.routes");
+const {captchaRoutes} = require("../modules/captcha/captcha.routes");
 const router = require("express").Router();
 
 router.get("/", (req, res) => {
@@ -26,6 +27,7 @@ router.use("/waiter", waiterRoutes)
 router.use("/order", orderRoutes)
 router.use("/frontoffice", frontOfficeRoutes)
 router.use("/dashboard", DashboardRoutes)
+router.use("/captcha", captchaRoutes)
 
 
 router.get("/holiday", async (req, res) => {

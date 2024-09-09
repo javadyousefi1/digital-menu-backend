@@ -11,6 +11,7 @@ const serveIndex = require("serve-index");
 const http = require("http");
 const { initializeSocket } = require("./socket/socketHandler"); // Import the socket initialization function
 const https = require("https");
+const redis = require('redis');
 dotenv.config();
 
 class Application {
@@ -19,6 +20,7 @@ class Application {
     #PORT = process.env.PORT || 5000;
     #DB_URI = process.env.MONGO_DB_URL;
     #HTTPS_PORT = process.env.HTTPS_PORT || 443;
+    #redisClient;
     constructor() {
         this.connectToDB();
         this.initClientSession();
@@ -33,11 +35,25 @@ class Application {
         );
     }
 
-    connectToDB() {
+    async connectToDB() {
         mongoose
             .connect(this.#DB_URI)
             .then(() => console.log("MongoDB connected!!"))
             .catch((err) => console.log("Failed to connect to MongoDB", err));
+
+        const client = redis.createClient({
+            url: process.env.REDIS_CONNECTION_STRING
+        });
+
+        client.connect()
+            .then(() => console.log('Connected to Redis'))
+            .catch((err) => console.error('Redis connection error:', err));
+
+        this.#app.use((req, res, next) => {
+            req.redis = client;
+            next();
+        });
+
     }
 
     configServer() {
