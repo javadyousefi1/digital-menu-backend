@@ -29,10 +29,17 @@ class FrontOfficeController extends Controller {
         try {
 
             const categories = await this.#categoryModel.find({ isActive: true }, "title isActive order image.path").sort({ order: 1 })
+            const fullUrl = req.protocol + '://' + req.hostname;
+
+
+            const test = Array.from(categories).map(item => ({
+                image: { path: fullUrl + item.image.path }, _id: item._id, isActive: item.isActive,
+                title: item.title, order: item.order
+            }))
 
             res.status(200).json({
                 statusCode: res.statusCode,
-                message: "all Category resived successfully", data: categories
+                message: "all Category resived successfully", data: test
             })
         } catch (error) {
             next(error)
@@ -52,9 +59,18 @@ class FrontOfficeController extends Controller {
 
             const menus = await this.#menuModel.find({ "categoryId": categoryObjectId, }, "title text price offPrice isActive image.path").sort({ createdAt: -1 });
 
+            const fullUrl = req.protocol + '://' + req.hostname;
+
+
+            const test = Array.from(menus).map(item => ({
+                image: { path: fullUrl + item.image.path }, _id: item._id, isActive: item.isActive,
+                title: item.title, order: item.order, text: item.text, price: item.price, offPrice: item.offPrice
+            }))
+
+
             res.status(200).json({
                 statusCode: res.statusCode,
-                message: "all Menus resived successfully", data: menus
+                message: "all Menus resived successfully", data: test
             })
         } catch (error) {
             next(error)
