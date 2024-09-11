@@ -98,6 +98,7 @@ class UserController extends Controller {
         try {
             // get user token
             const token = req?.cookies?.admin_panel_jwt
+            console.log(req?.cookies)
             console.log(token, "get current user")
             // reject if token is not available
             if (!token) throw new createError.Unauthorized("user not logged in")
@@ -105,6 +106,7 @@ class UserController extends Controller {
             // check userName is in user model or not
             if ("userName" in tokenData) {
                 const userData = await userModel.findOne({ userName: tokenData.userName }, { createdAt: 0, updatedAt: 0, _id: 0, password: 0 }).lean()
+                console.log(userData, "userData")
                 return res.status(200).json({
                     statusCode: res.statusCode,
                     message: "user data gets successfully",
