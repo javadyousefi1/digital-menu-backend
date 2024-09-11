@@ -69,7 +69,7 @@ class UserController extends Controller {
             // set token on cookie
             const cookieToken = await JwtController.generateNewToken(userName, next);
             // set token on cookie
-            res.cookie('admin_panel_jwt', cookieToken, { maxAge: 60 * 60 * 24 * 1000, httpOnly: true, secure: process.env.NODE_ENV === NodeEnv.Production });
+            res.cookie('admin_panel_jwt', cookieToken, { maxAge: 60 * 60 * 24 * 1000, httpOnly: true, samsite: "lax" });
             // response
             res.status(200).json({
                 statusCode: res.statusCode,
