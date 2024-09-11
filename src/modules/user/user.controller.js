@@ -48,7 +48,7 @@ class UserController extends Controller {
         try {
             // get data from body
             const { userName, password, token, code } = req.body;
-
+            console.log({ userName, password, token, code })
             if (!token || !code) throw Error("token or code not send")
 
             const result = await this.#model.countDocuments({ userName, password })
@@ -98,6 +98,7 @@ class UserController extends Controller {
         try {
             // get user token
             const token = req?.cookies?.admin_panel_jwt
+            console.log(token, "get current user")
             // reject if token is not available
             if (!token) throw new createError.Unauthorized("user not logged in")
             const tokenData = await jwt.verify(token, process.env.JWT_SECRET)
