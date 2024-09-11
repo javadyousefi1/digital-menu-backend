@@ -96,6 +96,7 @@ class UserController extends Controller {
 
     async getCurrentUser(req, res, next) {
         try {
+
             // get user token
             const token = req?.cookies?.admin_panel_jwt
             console.log(req?.cookies)
