@@ -37,22 +37,17 @@ class waiterController extends Controller {
         }
     }
 
-
     async getAllwaiters(req, res, next) {
         try {
             const { pageSize, pageIndex } = req.query;
     
-            // Get the current date and time
+            // Get today's date
             const today = new Date();
     
-            // Calculate the start of today (midnight)
-            const startOfToday = new Date(today);
-            startOfToday.setHours(0, 0, 0, 0);
-    
-            // Delete all data created before the start of today
+            // Delete all data created before today
             await this.#model.deleteMany({
                 createdAt: {
-                    $lt: startOfToday
+                    $lt: today
                 }
             });
     

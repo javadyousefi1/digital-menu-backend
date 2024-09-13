@@ -79,7 +79,7 @@ class FrontOfficeController extends Controller {
 
     async addNewWaiter(req, res, next) {
         try {
-            if (!req.captchaIsValid) throw new createError.BadRequest("captcha failed")
+            // if (!req.captchaIsValid) throw new createError.BadRequest("captcha failed")
             // get data from body
             const { deskNumber } = req.body;
             const newwaiter = { deskNumber };
