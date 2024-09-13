@@ -10,9 +10,12 @@ const { frontOfficeRoutes } = require("../modules/frontOffice/frontOffice.routes
 const { default: axios } = require("axios");
 const HolidayAPI = require('holidayapi');
 const { DashboardRoutes } = require("../modules/dashboard/dashboard.routes");
-const {captchaRoutes} = require("../modules/captcha/captcha.routes");
+const { captchaRoutes } = require("../modules/captcha/captcha.routes");
+const dayjs = require("dayjs");
 const router = require("express").Router();
+const jalaliday = require('jalaliday'); // Correct plugin
 
+dayjs.extend(jalaliday);
 router.get("/", (req, res) => {
     res.status(200).json({ message: "welcome to Javad app :)" })
 });
@@ -30,26 +33,46 @@ router.use("/dashboard", DashboardRoutes)
 router.use("/captcha", captchaRoutes)
 
 
-router.get("/holiday", async (req, res) => {
-    const holidayApi = new HolidayAPI({ key: 'd256db75-f231-4db3-9549-86e5f9eff08c' });
+router.get('/fetch-holidays', async (req, res) => {
     try {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth() + 1; // getMonth() returns 0-based index
+        const { year, month } = req.query;
 
-        // Fetch holidays for the current month
-        const holidays = await holidayApi.v1.holidays({
-            country: 'US', // Change to your required country code
-            year: year,
-            month: month
-        });
+        if (!year || !month) {
+            return res.status(400).json({ error: 'Year and month are required.' });
+        }
 
-        res.json(holidays);
+        // Convert to Jalali calendar
+        const startDate = dayjs(`${year}-${month}-01`);
+        const daysInMonth = 31 || startDate.daysInMonth();
+
+        const requests = [];
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const formattedDate = startDate.date(day).format('YYYY/MM/DD');
+            const url = `https://holidayapi.ir/jalali/${formattedDate}`;
+
+            // Push the axios request promise to array
+            requests.push(axios.get(url));
+        }
+
+        // Execute all requests in parallel
+        const results = await Promise.allSettled(requests);
+
+        // Extract status and data from results
+        const data = results.map((result, index) => ({
+            day: `${index + 1}`,
+            status: result.status,
+            data: result.status === 'fulfilled' ? result.value.data : null,
+            error: result.status === 'rejected' ? result.reason : null
+        }));
+
+        res.json(data);
+
     } catch (error) {
-        console.error('Error fetching holidays:', error);
-        res.status(500).json({ error: 'Failed to fetch holidays' });
+        console.log(error);
+        res.status(500).json({ error: 'Something went wrong' });
     }
-})
+});
 
 
 module.exports = {

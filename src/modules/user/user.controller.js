@@ -68,8 +68,9 @@ class UserController extends Controller {
             }
             // set token on cookie
             const cookieToken = await JwtController.generateNewToken(userName, next);
+            console.log(cookieToken, "cookieToken")
             // set token on cookie
-            res.cookie('admin_panel_jwt', cookieToken, { maxAge: 60 * 60 * 24 * 1000, httpOnly: true, sameSite: "lax", secure: true });
+            res.cookie('admin_panel_jwt', cookieToken, { maxAge: 60 * 60 * 24 * 1000, httpOnly: true, sameSite: 'none', secure: process.env.NODE_ENV === "production", domain: process.env.DOMAIN, });
             // response
             res.status(200).json({
                 statusCode: res.statusCode,
@@ -80,6 +81,21 @@ class UserController extends Controller {
             next(error)
         }
     }
+
+
+    async getCookie(req, res, next) {
+        try {
+            res.status(200).json({
+                statusCode: res.statusCode,
+                message: "all users gets successfully",
+                data: req.cookies
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
 
     async getAllUsers(req, res, next) {
         try {
@@ -99,7 +115,7 @@ class UserController extends Controller {
 
             // get user token
             const token = req?.cookies?.admin_panel_jwt
-            console.log(req?.cookies)
+            console.log("gcuc", req?.cookies)
             console.log(token, "get current user")
             // reject if token is not available
             if (!token) throw new createError.Unauthorized("user not logged in")

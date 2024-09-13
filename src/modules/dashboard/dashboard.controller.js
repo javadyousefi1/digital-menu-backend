@@ -65,7 +65,10 @@ class DashboardController extends Controller {
             }
 
 
-            res.json(statistics);
+            res.status(200).json({
+                data: statistics,
+                statusCode: res.statusCode
+            });
         } catch (error) {
             next(error);
         }
@@ -85,7 +88,7 @@ class DashboardController extends Controller {
 
             const data = [...result]
 
-            
+
 
             res.json({ result });
         } catch (error) {
