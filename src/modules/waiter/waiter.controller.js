@@ -40,20 +40,20 @@ class waiterController extends Controller {
     async getAllwaiters(req, res, next) {
         try {
             const { pageSize, pageIndex } = req.query;
-    
+
             // Get today's date
-            const today = new Date();
-    
+            const today = new Date().setHours(0, 0, 0,);
+
             // Delete all data created before today
             await this.#model.deleteMany({
                 createdAt: {
                     $lt: today
                 }
             });
-    
+
             // Paginate the remaining data
             const paginateData = await paginate(this.#model, {}, pageSize, pageIndex);
-    
+
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "All waiters received successfully",
@@ -63,7 +63,7 @@ class waiterController extends Controller {
             next(error);
         }
     }
-    
+
 
     async deletewaiter(req, res, next) {
         try {
