@@ -25,7 +25,7 @@ class DashboardController extends Controller {
                 $lte: `${endDayOfCurrentMonthJalali.slice(0, 11)}23:59:59.000Z`,
             }
 
-            const result = await this.#orderModel.find({ createdAt: query }).select('+createdAt');;
+            const result = await this.#orderModel.find({ createdAt: query, status: 3 }).select('+createdAt');;
             const inThisMonthUntilNow = result.reduce((acc, curr) => acc = acc + curr.totalPrice, 0)
 
 
@@ -56,7 +56,7 @@ class DashboardController extends Controller {
             });
 
 
-            const mostDayIncomeInCurrentMonth = array.sort((a, b) => b.price - a.price)[0]
+            const mostDayIncomeInCurrentMonth = array.sort((a, b) => b.price - a.price)[0] ?? 0
 
 
             const statistics = {
@@ -84,13 +84,102 @@ class DashboardController extends Controller {
                 $lte: `${today.slice(0, 11)}23:59:59.000Z`,
             }
 
-            const result = await this.#orderModel.find({ createdAt: query }).select('+createdAt');;
+            const result = await this.#orderModel.find({ createdAt: query, status: 3 }).select('+createdAt');;
 
             const data = [...result]
 
+            const sevenDayObject = dayjs().calendar('jalali').subtract(7, "day")
 
 
-            res.json({ result });
+            let lastData = []
+
+            for (let i = 1; i <= 7; i++) {
+                const test = sevenDayObject.add(i, "day")
+
+                const currentDate = test.toISOString().split("T")[0]
+
+                const x = data.filter(item => {
+                    const createdAt = new Date(String(item.createdAt)).toISOString().split('T')[0]
+
+                    if (createdAt === currentDate) return item
+                })
+
+                lastData.push(x)
+            }
+
+            const totalLastSevenDaysPrice = []
+
+            lastData.forEach(item => {
+                const totalOfCurrentDate = item.reduce((acc, curr) => acc = acc + curr.totalPrice, 0)
+                totalLastSevenDaysPrice.push(totalOfCurrentDate)
+            })
+
+
+            // most item menu
+            const report = [];
+
+            data?.forEach((item) => {
+                item.order.forEach((innerItem) => {
+
+                    const alreadyExsit = report.find(
+                        (item) => item.menuId === innerItem._id
+                    );
+
+                    if (alreadyExsit) {
+                        alreadyExsit.count = alreadyExsit.count + innerItem?.count;
+                    } else {
+                        const newRecord = {
+                            menuId: innerItem._id,
+                            count: innerItem?.count,
+                            title: innerItem?.title,
+                        };
+                        report.push(newRecord);
+                    }
+                });
+            });
+            const mostItemMenuResult = report?.sort((a, b) => b.count - a.count)[0];
+            console.log(mostItemMenuResult)
+            // most item menu
+
+
+            // most category
+            const reportCategory = [];
+
+            data?.forEach((item) => {
+                item.order.forEach((innerItem) => {
+                    const alreadyExsit = reportCategory.find(
+                        (item) => item.categoryId === innerItem.categoryId._id
+                    );
+
+                    if (alreadyExsit) {
+                        alreadyExsit.count = alreadyExsit.count + 1;
+                    } else {
+                        const newRecord = {
+                            categoryId: innerItem.categoryId._id,
+                            count: 1,
+                            title: innerItem?.categoryId?.title,
+                        };
+                        reportCategory.push(newRecord);
+                    }
+                });
+            });
+
+            const resultWeekCategory = reportCategory?.sort((a, b) => b.count - a.count)[0];
+
+            // most category
+
+
+            const weekData = {
+                lastSevenDaysIncome: totalLastSevenDaysPrice,
+                mostItemMenu: mostItemMenuResult??[],
+                mostCategoryMenu: resultWeekCategory??[],
+            }
+
+            res.status(200).json({
+                data: weekData,
+                statusCode: res.statusCode
+            });
+
         } catch (error) {
             next(error);
         }
