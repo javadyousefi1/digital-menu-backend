@@ -12,6 +12,7 @@ const http = require("http");
 const { initializeSocket } = require("./socket/socketHandler"); // Import the socket initialization function
 const https = require("https");
 const redis = require('redis');
+const sql = require('mssql');
 dotenv.config();
 
 class Application {
@@ -23,6 +24,7 @@ class Application {
     #redisClient;
     constructor() {
         this.connectToDB();
+        this.connectToSQLServer();
         this.initClientSession();
         this.configServer();
         initializeSocket(this.#server); // Initialize Socket.io with the HTTP server
@@ -54,6 +56,27 @@ class Application {
             next();
         });
 
+    }
+    // SQL Server connection function
+    async connectToSQLServer() {
+        try {
+            const sqlConfig = {
+                user: "sa",
+                password: "rrPgO2p5Obzx8BjdCqyMNyJL",
+                server: "vinson.liara.cloud", // e.g., 'localhost' for local dev
+                database: "myDB",
+                port: 32400,
+                options: {
+                    encrypt: true, // Use true if you're on Azure
+                    // trustServerCertificate: true // Needed for local dev if using self-signed certs
+                }
+            };
+
+            await sql.connect(sqlConfig);
+            console.log('Connected to SQL Server');
+        } catch (err) {
+            console.error('Failed to connect to SQL Server:', err);
+        }
     }
 
     configServer() {
